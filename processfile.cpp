@@ -59,14 +59,17 @@ int processFile::paCallback( const void *inputBuffer, void *outputBuffer,
 
     processFile *localPF;
     unsigned long countRead;
+    float *out = (float*)outputBuffer;
     if( MainBuffer.isAvailable ){
-        float *out = (float*)outputBuffer;
         localPF = (processFile*)userData;
         countRead = localPF->getMemBuffer( out,framesPerBuffer );
         if( countRead < framesPerBuffer ){
             return paComplete;
         }
     }
+    else
+        memset( out,0,framesPerBuffer*CHANNELS*sizeof(float));
+
     return paContinue;
 }
 
@@ -115,37 +118,6 @@ processFile::~processFile()
     sf_close(file);
     qDebug() << "Destruction";
 }
-
-////////////////////////////////////////////////////////////////////////////
-/// \brief processFile::pause
-////////////////////////////////////////////////////////////////////////////
-void processFile::pause()
-{
-    PaError err;
-    err = Pa_StopStream(stream);
-    if( err != paNoError )
-        goto error;
-    return;
-error:
-  qDebug() << "An error occured while using the portaudio stream" ;
-  qDebug() << "Error number: " << err ;
-  qDebug() << "Error message: " << Pa_GetErrorText( err ) ;
-}
-////////////////////////////////////////////////////////////////////////////
-/// \brief processFile::play
-////////////////////////////////////////////////////////////////////////////
-void processFile::play()
-{
-    PaError err;
-    err = Pa_StartStream(stream);
-    if( err != paNoError )
-        goto error;
-    return;
-error:
-  qDebug() << "An error occured while using the portaudio stream" ;
-  qDebug() << "Error number: " << err ;
-  qDebug() << "Error message: " << Pa_GetErrorText( err ) ;
-}
 ////////////////////////////////////////////////////////////////////////////
 /// \brief processFile::openSoundFile
 /// \param fileName
@@ -159,13 +131,13 @@ long long processFile::openSoundFile(QString fileName)
     PaStreamFlags streamFlags;
     PaDeviceIndex outDevNum;
 
-    static bool isfileOpen = false;
+    currFileName = fileName;
     SF_INFO sfinfo;
     sfinfo.channels = CHANNELS;
     sfinfo.samplerate = SAMPLE_RATE;
     if( isfileOpen )
         sf_close( file );
-    file = sf_open( fileName.toStdString().c_str(),SFM_READ,&sfinfo );
+    file = sf_open( currFileName.toStdString().c_str(),SFM_READ,&sfinfo );
     Q_ASSERT(file != NULL );
     isfileOpen = true;
     totalFrames = 0;
@@ -229,10 +201,10 @@ long long processFile::openSoundFile(QString fileName)
     if( err != paNoError )
         goto error;
 //Fill buffer on Timer to limitate Glitch
+    isPaused = false;
     MainBuffer.idxNext = 0;
     fillBufferTimer = new QTimer( this );
     fillBufferTimer ->connect(fillBufferTimer, SIGNAL(timeout()),this, SLOT(insertIntoMemBuffer()));
-    fillBufferTimer->start( TIMERTIMEOUT );
     return (long long)0;
 error:
   Pa_Terminate();
@@ -242,6 +214,103 @@ error:
   return (long long)0;
 
 }
+
+////////////////////////////////////////////////////////////////////////////
+/// \brief processFile::play
+////////////////////////////////////////////////////////////////////////////
+void processFile::play()
+{
+    PaError err;
+    err = Pa_StartStream(stream);
+    if( err != paNoError )
+        goto error;
+    isPaused = false;
+    fillBufferTimer->start( 0 );
+    return;
+error:
+  qDebug() << "An error occured while using the portaudio stream" ;
+  qDebug() << "Error number: " << err ;
+  qDebug() << "Error message: " << Pa_GetErrorText( err ) ;
+}
+////////////////////////////////////////////////////////////////////////////
+/// \brief processFile::pause
+////////////////////////////////////////////////////////////////////////////
+void processFile::pause()
+{
+    PaError err;
+    err = Pa_StopStream(stream);
+    if( err != paNoError )
+        goto error;
+    isPaused = true;
+    return;
+error:
+  qDebug() << "An error occured while using the portaudio stream" ;
+  qDebug() << "Error number: " << err ;
+  qDebug() << "Error message: " << Pa_GetErrorText( err ) ;
+}
+////////////////////////////////////////////////////////////////////////////
+/// \brief processFile::seek
+/// \param frameToStart
+////////////////////////////////////////////////////////////////////////////
+void processFile::seek(long long frameToStart)
+{
+    PaError err;
+
+    if( !isfileOpen ){
+        emit( processed((float)0));
+        qDebug() << "No file is Opened";
+        return;
+    }
+
+
+    err = Pa_IsStreamStopped(stream);
+    if( err == 0){
+        err = Pa_StopStream( stream );
+        if( err != paNoError )
+            goto error;
+    }
+    fillBufferTimer->stop();
+    sf_seek(file,frameToStart,SEEK_SET);
+
+    MainBuffer.isAvailable = false;
+    MainBuffer.idxNext = 0;
+    MainBuffer.endOfFileReached = false;
+
+    currFileFrameRead = frameToStart;
+    currPlayFrameRead = frameToStart;
+    currPlayedFrameRead = frameToStart;
+    listOfBlock.clear();
+    if( !isPaused ){
+        fillBufferTimer->start( 0 );
+
+        err = Pa_StartStream(stream);
+        if( err != paNoError )
+            goto error;
+    }
+    return;
+
+
+error:
+  qDebug() << "An error occured while using the portaudio stream" ;
+  qDebug() << "Error number: " << err ;
+  qDebug() << "Error message: " << Pa_GetErrorText( err ) ;
+
+}
+////////////////////////////////////////////////////////////////////////////
+/// \brief processFile::seek
+/// \param percentOfFile
+////////////////////////////////////////////////////////////////////////////
+void processFile::seek(float percentOfFile )
+{
+    if( !isfileOpen ){
+        emit( processed((float)0));
+        qDebug() << "No file is Opened";
+        return;
+    }
+    seek((long long)((float)totalFrames * percentOfFile/(float)100));
+    emit( processed(percentOfFile));
+}
+
 ////////////////////////////////////////////////////////////////////////////
 /// \brief processFile::insertIntoMemBuffer
 ////////////////////////////////////////////////////////////////////////////
@@ -352,17 +421,29 @@ long processFile::getMemBuffer(float *out,unsigned long framesToRead){
 /// \param tempo
 ////////////////////////////////////////////////////////////////////////////
 void processFile::setTempo(int tempo){
-    if( currTempo != tempo ){
+//    if( currTempo != tempo ){
         pSoundTouch.setTempo((float)tempo/100);
         currTempo = tempo;
 
-    }
+//    }
 }
+////////////////////////////////////////////////////////////////////////////
+/// \brief processFile::setPitchSemiTones
+/// \param semiTone
+////////////////////////////////////////////////////////////////////////////
 void processFile::setPitchSemiTones(int semiTone){
-    if( currSemiTone != semiTone ){
+//    if( currSemiTone != semiTone ){
         pSoundTouch.setPitchSemiTones(semiTone);
         currSemiTone = semiTone;
-    }
+//    }
+}
+////////////////////////////////////////////////////////////////////////////
+/// \brief processFile::setOctava
+/// \param octava
+////////////////////////////////////////////////////////////////////////////
+void processFile::setOctava(int octava){
+    pSoundTouch.setPitchOctaves((float)octava);
+    currOctava = octava;
 }
 ////////////////////////////////////////////////////////////////////////////
 /// \brief processFile::getBPM
@@ -386,7 +467,6 @@ float processFile::getBPM(){
     return bpm.getBpm();
 
 }
-
 ////////////////////////////////////////////////////////////////////////////
 /// \brief processFile::toFrameOrig
 /// \param frameToConvert

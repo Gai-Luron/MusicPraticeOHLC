@@ -28,9 +28,13 @@ private:
     };
     QList <posReadFrame> listOfBlock;
     QTime currTimePlayed;
+    QString currFileName;
     long long currFileFrameRead;
     long long currPlayFrameRead;
     long long currPlayedFrameRead;
+    bool isfileOpen = false;
+    bool isPaused = true;
+
 
 
     long getMemBuffer(float *out,unsigned long framesPerBuffer);
@@ -51,9 +55,12 @@ public:
                            );
     long long openSoundFile(QString fileName);
     void play();
+    void seek(long long frameToStart);
+    void seek(float percentOfFile );
     void pause();
     void setTempo(int tempo);
     void setPitchSemiTones(int semiTone);
+    void setOctava(int octava);
     float getBPM();
     long long getCurrentReadFrame();
     void getCurrentReadTime(QTime *currentTime);
@@ -63,6 +70,7 @@ public:
     bool bypassStrech = false;
     int currTempo;
     int currSemiTone;
+    int currOctava;
 
 public slots:
     void insertIntoMemBuffer();

@@ -28,8 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 void MainWindow::setCurrentTimePlayed(float nb)
 {
-    if( flagUpdateSliderTimePlayed )
+    if( flagUpdateSliderTimePlayed ){
         ui->currentTimePlayed->setValue(nb*100);
+    }
 }
 MainWindow::~MainWindow()
 {
@@ -57,6 +58,7 @@ void MainWindow::on_pushButton_clicked()
     QString fileName = "D:/MesDocuments/Dev/MusicPraticeOHLC/Debug/debug/BYT883.ogg";
     rFiles->addFile(fileName);
     pFileObj->openSoundFile(fileName);
+//    pFileObj->seek((float)50);
     pFileObj->play();
 
 }
@@ -91,7 +93,7 @@ void MainWindow::on_currentTimePlayed_sliderPressed()
 void MainWindow::on_currentTimePlayed_sliderReleased()
 {
     flagUpdateSliderTimePlayed = true;
-    qDebug() << ui->currentTimePlayed->value();
+    pFileObj->seek((float)((float)ui->currentTimePlayed->value()/(float)100));
 
 }
 
@@ -133,3 +135,5 @@ void MainWindow::on_valueSemiTone_editingFinished()
 
 
 }
+
+

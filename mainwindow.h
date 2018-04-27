@@ -43,6 +43,7 @@ private slots:
 
     void on_valueSemiTone_editingFinished();
 
+
 private:
     Ui::MainWindow *ui;
 
