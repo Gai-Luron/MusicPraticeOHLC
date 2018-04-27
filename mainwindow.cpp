@@ -21,14 +21,15 @@ MainWindow::MainWindow(QWidget *parent) :
     pFileObj->bypassStrech = false;
     rFiles = new recentFiles();
 
-    connect(pFileObj, SIGNAL(processed(int)),this, SLOT(setCurrentTimePlayed(int)));
+    connect(pFileObj, SIGNAL(processed(float)),this, SLOT(setCurrentTimePlayed(float)));
     ui->valueTempo->setText(QString::number(ui->sliderTempo->value()));
+    ui->valueSemiTone->setText(QString::number(ui->sliderPitch->value()));
 
 }
-void MainWindow::setCurrentTimePlayed(int nb)
+void MainWindow::setCurrentTimePlayed(float nb)
 {
     if( flagUpdateSliderTimePlayed )
-        ui->currentTimePlayed->setValue(nb);
+        ui->currentTimePlayed->setValue(nb*100);
 }
 MainWindow::~MainWindow()
 {
@@ -60,11 +61,6 @@ void MainWindow::on_pushButton_clicked()
 
 }
 
-void MainWindow::on_sliderTempo_actionTriggered(int action)
-{
-    ui->valueTempo->setText(QString::number(ui->sliderTempo->value()));
-    pFileObj->setTempo(ui->sliderTempo->value());
-}
 
 
 void MainWindow::on_checkByPass_stateChanged(int arg1)
@@ -101,11 +97,39 @@ void MainWindow::on_currentTimePlayed_sliderReleased()
 
 void MainWindow::on_valueTempo_editingFinished()
 {
-    if( ui->valueTempo->text().toInt() < 40 )
-        ui->valueTempo->setText("40");
-    if( ui->valueTempo->text().toInt() > 200 )
-        ui->valueTempo->setText("200");
+    if( ui->valueTempo->text().toInt() < ui->sliderTempo->minimum() ){
+        ui->valueTempo->setText(QString::number(ui->sliderTempo->minimum()));
+    }
+    if( ui->valueTempo->text().toInt() > ui->sliderTempo->maximum() ){
+        ui->valueTempo->setText(QString::number(ui->sliderTempo->maximum()));
+    }
     ui->sliderTempo->setValue(ui->valueTempo->text().toInt());
     pFileObj->setTempo(ui->sliderTempo->value());
+
+}
+
+void MainWindow::on_sliderPitch_valueChanged(int value)
+{
+    ui->valueSemiTone->setText(QString::number(ui->sliderPitch->value()));
+    pFileObj->setPitchSemiTones(ui->sliderPitch->value());
+}
+
+void MainWindow::on_sliderTempo_valueChanged(int value)
+{
+    ui->valueTempo->setText(QString::number(ui->sliderTempo->value()));
+    pFileObj->setTempo(ui->sliderTempo->value());
+
+}
+
+
+void MainWindow::on_valueSemiTone_editingFinished()
+{
+    if( ui->valueSemiTone->text().toInt() < ui->sliderPitch->minimum() )
+        ui->valueSemiTone->setText(QString::number(ui->sliderPitch->minimum()));
+    if( ui->valueSemiTone->text().toInt() > ui->sliderPitch->maximum() )
+        ui->valueSemiTone->setText(QString::number(ui->sliderPitch->maximum()));
+    ui->sliderPitch->setValue(ui->valueSemiTone->text().toInt());
+    pFileObj->setPitchSemiTones(ui->sliderPitch->value());
+
 
 }

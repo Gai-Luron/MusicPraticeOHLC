@@ -53,6 +53,7 @@ public:
     void play();
     void pause();
     void setTempo(int tempo);
+    void setPitchSemiTones(int semiTone);
     float getBPM();
     long long getCurrentReadFrame();
     void getCurrentReadTime(QTime *currentTime);
@@ -61,12 +62,13 @@ public:
 
     bool bypassStrech = false;
     int currTempo;
+    int currSemiTone;
 
 public slots:
     void insertIntoMemBuffer();
 
 signals:
-    void processed(int num);
+    void processed(float num);
 
 
 };

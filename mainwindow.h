@@ -22,15 +22,13 @@ private slots:
 
     void on_pushButton_clicked();
 
-    void on_sliderTempo_actionTriggered(int action);
-
     void on_checkByPass_stateChanged(int arg1);
 
     void on_butPlay_clicked();
 
     void on_butPause_clicked();
 
-    void setCurrentTimePlayed(int i);
+    void setCurrentTimePlayed(float i);
 
 
     void on_currentTimePlayed_sliderPressed();
@@ -38,6 +36,12 @@ private slots:
     void on_currentTimePlayed_sliderReleased();
 
     void on_valueTempo_editingFinished();
+
+    void on_sliderPitch_valueChanged(int value);
+
+    void on_sliderTempo_valueChanged(int value);
+
+    void on_valueSemiTone_editingFinished();
 
 private:
     Ui::MainWindow *ui;

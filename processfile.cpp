@@ -13,6 +13,7 @@
 #define FRAMES_PER_BUFFER SAMPLE_RATE/100 // HOW MANY FRAME TOO QUERY IN CALLBACK. LESS IS, LESS DELAY TO START
 #define FRAMES_PER_BUFFER_IN_MEMORY SAMPLE_RATE*2 // FRAME IN BUFFER MEMORY IN SECOND
 #define CURRTEMPO   (100)
+#define CURRSEMITONE   (0)
 #define TIMERTIMEOUT (400) // CALLBACK ON TIMER FOR INSERT INTO MEMORY BUFFER
 #define SIZEMEMBUFFER FRAMES_PER_BUFFER_IN_MEMORY*CHANNELS*10
 
@@ -78,6 +79,7 @@ processFile::processFile()
 
 
     currTempo = CURRTEMPO;
+    currSemiTone = CURRSEMITONE;
 
     bypassStrech = false; // if set to true, prog don't use soundTouch library, no sound streching
 
@@ -87,6 +89,7 @@ processFile::processFile()
     pSoundTouch.setChannels(CHANNELS);
     pSoundTouch.setSampleRate(SAMPLE_RATE);
     pSoundTouch.setTempo(currTempo/100 );
+    pSoundTouch.setPitchSemiTones(currSemiTone);
 
 // Intitialize and Start PortAudio
     err = Pa_Initialize();
@@ -252,8 +255,9 @@ void processFile::insertIntoMemBuffer()
     qSem.acquire(1);
     while ( MainBuffer.idxNext < FRAMES_PER_BUFFER_IN_MEMORY &&  MainBuffer.endOfFileReached == false ) {
         if( bypassStrech ){
-            if(pSoundTouch.isEmpty() == false) // Case of Switch in middle of file
+            if(pSoundTouch.numSamples() != 0 ){ // Case of Switch in middle of file
                 countFrameReadFile = pSoundTouch.receiveSamples( data, FRAMES_PER_BUFFER_IN_MEMORY);
+            }
             else{
                 countFrameReadFile = sf_readf_float(file, data, FRAMES_PER_BUFFER_IN_MEMORY);
                 if(countFrameReadFile == 0){
@@ -276,7 +280,7 @@ void processFile::insertIntoMemBuffer()
             MainBuffer.idxNext += countFrameReadFile*CHANNELS;
         }
         else{
-            if(pSoundTouch.isEmpty()){
+            if(pSoundTouch.numSamples() == 0){
                 countFrameReadFile = sf_readf_float(file, data, FRAMES_PER_BUFFER_IN_MEMORY);
                 if(countFrameReadFile == 0){
                     MainBuffer.endOfFileReached = true;
@@ -323,7 +327,7 @@ long processFile::getMemBuffer(float *out,unsigned long framesToRead){
     else
         read =  MainBuffer.idxNext/CHANNELS;
 
-    int prc = (float)toFrameOrig(currPlayedFrameRead)/(float)totalFrames * (float)10000;
+    float prc = (float)toFrameOrig(currPlayedFrameRead)/(float)totalFrames * (float)100;
     emit( processed(prc));
 
     currPlayedFrameRead += read;
@@ -352,6 +356,12 @@ void processFile::setTempo(int tempo){
         pSoundTouch.setTempo((float)tempo/100);
         currTempo = tempo;
 
+    }
+}
+void processFile::setPitchSemiTones(int semiTone){
+    if( currSemiTone != semiTone ){
+        pSoundTouch.setPitchSemiTones(semiTone);
+        currSemiTone = semiTone;
     }
 }
 ////////////////////////////////////////////////////////////////////////////
