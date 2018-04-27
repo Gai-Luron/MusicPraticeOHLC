@@ -22,20 +22,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-LIBS += C:/Qt/Tools/mingw530_32/lib/libsndfile-1.dll
-LIBS += C:/Qt/Tools/mingw530_32/lib/portaudio.dll
-LIBS += D:/MesDocuments/Dev/MusicPraticeOHLC/libSoundTouch.a
+INCLUDEPATH += $$PWD/include
+
+LIBS += $$_PRO_FILE_PWD_/lib/libsndfile-1.dll
+LIBS += $$_PRO_FILE_PWD_/lib/portaudio.dll
+LIBS += $$_PRO_FILE_PWD_/lib/libSoundTouch.a
 
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    processfile.cpp \
-    recentfiles.cpp
+        processfile.cpp \
+        recentfiles.cpp
 
 HEADERS += \
         mainwindow.h \
-    processfile.h \
-    recentfiles.h
+        processfile.h \
+        recentfiles.h
 
 FORMS += \
         mainwindow.ui
