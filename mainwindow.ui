@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>873</width>
-    <height>742</height>
+    <width>895</width>
+    <height>705</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,15 +35,23 @@
          <attribute name="title">
           <string>Tab 1</string>
          </attribute>
-         <widget class="QListWidget" name="listWidget">
+         <widget class="QTreeWidget" name="recentFilesWidget">
           <property name="geometry">
            <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>671</width>
-            <height>461</height>
+            <x>0</x>
+            <y>0</y>
+            <width>601</width>
+            <height>501</height>
            </rect>
           </property>
+          <property name="alternatingRowColors">
+           <bool>false</bool>
+          </property>
+          <column>
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </column>
          </widget>
         </widget>
         <widget class="QWidget" name="tab_2">
@@ -51,6 +59,74 @@
           <string>Tab 2</string>
          </attribute>
         </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="8" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QSlider" name="currentTimePlayed">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBothSides</enum>
+        </property>
+        <property name="tickInterval">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="8" column="3">
+     <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <item>
+       <widget class="QPushButton" name="butPlay">
+        <property name="text">
+         <string>Play</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="butPause">
+        <property name="text">
+         <string>Pause</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="2" rowspan="3">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>PushButton</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="text">
+         <string>PushButton</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -69,13 +145,10 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="3">
-     <widget class="QPushButton" name="goSound1">
+    <item row="0" column="3">
+     <widget class="QPushButton" name="goSound2">
       <property name="text">
-       <string>Morceau court</string>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
+       <string>BeetWeen Yesterday an Tomorror</string>
       </property>
      </widget>
     </item>
@@ -83,6 +156,16 @@
      <widget class="QPushButton" name="pushButton">
       <property name="text">
        <string>Le Canzoni alla radio</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <widget class="QPushButton" name="goSound1">
+      <property name="text">
+       <string>Morceau court</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
@@ -267,81 +350,6 @@
       </item>
      </layout>
     </item>
-    <item row="8" column="1">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QSlider" name="currentTimePlayed">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximum">
-         <number>10000</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="tickPosition">
-         <enum>QSlider::TicksBothSides</enum>
-        </property>
-        <property name="tickInterval">
-         <number>1000</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="3">
-     <widget class="QPushButton" name="goSound2">
-      <property name="text">
-       <string>BeetWeen Yesterday an Tomorror</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2" rowspan="3">
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="8" column="3">
-     <layout class="QHBoxLayout" name="horizontalLayout_9">
-      <item>
-       <widget class="QPushButton" name="butPlay">
-        <property name="text">
-         <string>Play</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="butPause">
-        <property name="text">
-         <string>Pause</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -349,7 +357,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>873</width>
+     <width>895</width>
      <height>21</height>
     </rect>
    </property>

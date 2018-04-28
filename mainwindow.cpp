@@ -3,6 +3,7 @@
 #include "processfile.h"
 #include "recentfiles.h"
 #include <QDebug>
+#include <QFileInfo>
 
 
 
@@ -19,12 +20,45 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     pFileObj =new processFile();
     pFileObj->bypassStrech = false;
-    rFiles = new recentFiles();
 
     connect(pFileObj, SIGNAL(processed(float)),this, SLOT(setCurrentTimePlayed(float)));
+
     ui->valueTempo->setText(QString::number(ui->sliderTempo->value()));
     ui->valueSemiTone->setText(QString::number(ui->sliderPitch->value()));
 
+    updateRecentFilesWidget();
+
+
+}
+void MainWindow::updateRecentFilesWidget(){
+    QStringList headers;
+    rFiles = new recentFiles();
+
+    ui->recentFilesWidget->clear();
+    ui->recentFilesWidget->setHeaderLabel("Derniers fichiers Audios");
+    ui->recentFilesWidget->setColumnCount(4);
+    ui->recentFilesWidget->hideColumn(3);
+    ui->recentFilesWidget->setColumnWidth(0,100);
+    ui->recentFilesWidget->setColumnWidth(1,50);
+    ui->recentFilesWidget->setColumnWidth(2,300);
+    headers << "Fichier" << "Ext" << "Chemin";
+    ui->recentFilesWidget->setHeaderLabels(headers);
+
+
+
+    QFileInfo QF;
+    QTreeWidgetItem *itemTree;
+    for( int i = 0; i < rFiles->listOfFiles().count(); i++){
+        QF.setFile(rFiles->listOfFiles().at(i));
+        itemTree = new QTreeWidgetItem();
+        itemTree->setText(0, QF.baseName());
+        itemTree->setText(1, QF.completeSuffix());
+        itemTree->setText(2, QF.path());
+        itemTree->setText(3, rFiles->listOfFiles().at(i));
+        ui->recentFilesWidget->addTopLevelItem(itemTree);
+        if( i == 0)
+            ui->recentFilesWidget->setCurrentItem(itemTree);
+    }
 }
 void MainWindow::setCurrentTimePlayed(float nb)
 {
@@ -136,4 +170,13 @@ void MainWindow::on_valueSemiTone_editingFinished()
 
 }
 
+void MainWindow::on_recentFilesWidget_itemActivated(QTreeWidgetItem *item, int column)
+{
+    QString fileName;
 
+    fileName = item->text(3);
+    rFiles->addFile(fileName);
+    updateRecentFilesWidget();
+    pFileObj->openSoundFile(fileName);
+    pFileObj->play();
+}

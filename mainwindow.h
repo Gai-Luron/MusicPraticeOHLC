@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QListWidgetItem>
+#include <QTreeWidgetItem>
 
 namespace Ui {
 class MainWindow;
@@ -43,6 +45,9 @@ private slots:
 
     void on_valueSemiTone_editingFinished();
 
+    void updateRecentFilesWidget();
+
+    void on_recentFilesWidget_itemActivated(QTreeWidgetItem *item, int column);
 
 private:
     Ui::MainWindow *ui;
