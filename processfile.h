@@ -4,6 +4,8 @@
 #include <QObject>
 #include<QTimer>
 #include <QString>
+#include <windows.h>
+#define ENABLE_SNDFILE_WINDOWS_PROTOTYPES 1
 #include "sndfile.h"
 #include "portaudio.h"
 #include "SoundTouch.h"

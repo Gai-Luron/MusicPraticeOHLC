@@ -8,6 +8,7 @@
 
 
 
+
 #define CHANNELS 2
 #define SAMPLE_RATE   (44100)
 #define FRAMES_PER_BUFFER SAMPLE_RATE/100 // HOW MANY FRAME TOO QUERY IN CALLBACK. LESS IS, LESS DELAY TO START
@@ -125,7 +126,6 @@ processFile::~processFile()
 ////////////////////////////////////////////////////////////////////////////
 long long processFile::openSoundFile(QString fileName)
     {
-
     PaError err;
     PaStreamParameters outputParameters;
     PaStreamFlags streamFlags;
@@ -137,12 +137,16 @@ long long processFile::openSoundFile(QString fileName)
     sfinfo.samplerate = SAMPLE_RATE;
     if( isfileOpen )
         sf_close( file );
-    file = sf_open( currFileName.toStdString().c_str(),SFM_READ,&sfinfo );
+    qDebug() << currFileName.toStdString().c_str();
+    LPCWSTR toto = (LPCWSTR)currFileName.utf16();
+//  file = sf_open( currFileName.toStdString().c_str(),SFM_READ,&sfinfo );
+    file =  sf_wchar_open( toto, SFM_READ, &sfinfo);
     Q_ASSERT(file != NULL );
     isfileOpen = true;
     totalFrames = 0;
 
     while (true) {
+
         long long countFrameReadFile = sf_readf_float(file, data, SAMPLE_RATE); // Put One second each time
         if( countFrameReadFile == 0)
             break;

@@ -4,7 +4,7 @@
 #include "recentfiles.h"
 #include <QDebug>
 #include <QFileInfo>
-
+#include <QFileDialog>
 
 
 processFile *pFileObj;
@@ -38,7 +38,7 @@ void MainWindow::updateRecentFilesWidget(){
     ui->recentFilesWidget->setHeaderLabel("Derniers fichiers Audios");
     ui->recentFilesWidget->setColumnCount(4);
     ui->recentFilesWidget->hideColumn(3);
-    ui->recentFilesWidget->setColumnWidth(0,100);
+    ui->recentFilesWidget->setColumnWidth(0,200);
     ui->recentFilesWidget->setColumnWidth(1,50);
     ui->recentFilesWidget->setColumnWidth(2,300);
     headers << "Fichier" << "Ext" << "Chemin";
@@ -51,8 +51,8 @@ void MainWindow::updateRecentFilesWidget(){
     for( int i = 0; i < rFiles->listOfFiles().count(); i++){
         QF.setFile(rFiles->listOfFiles().at(i));
         itemTree = new QTreeWidgetItem();
-        itemTree->setText(0, QF.baseName());
-        itemTree->setText(1, QF.completeSuffix());
+        itemTree->setText(0, QF.completeBaseName());
+        itemTree->setText(1, QF.suffix());
         itemTree->setText(2, QF.path());
         itemTree->setText(3, rFiles->listOfFiles().at(i));
         ui->recentFilesWidget->addTopLevelItem(itemTree);
@@ -169,14 +169,28 @@ void MainWindow::on_valueSemiTone_editingFinished()
 
 
 }
-
+void MainWindow::startNewaudioFile( QString fileName ){
+    rFiles->addFile(fileName);
+    updateRecentFilesWidget();
+    pFileObj->openSoundFile(fileName);
+    pFileObj->play();
+}
 void MainWindow::on_recentFilesWidget_itemActivated(QTreeWidgetItem *item, int column)
 {
     QString fileName;
 
     fileName = item->text(3);
-    rFiles->addFile(fileName);
-    updateRecentFilesWidget();
-    pFileObj->openSoundFile(fileName);
-    pFileObj->play();
+    startNewaudioFile(fileName);
+}
+
+void MainWindow::on_openFile_triggered()
+{
+    QString fileName;
+
+    fileName = QFileDialog::getOpenFileName(this,
+        tr("Ouvrir Fichier Audio"), ".", tr("Fichier Audio (*.wav *.ogg )"));
+    qDebug() << fileName;
+    if( fileName != "")
+        startNewaudioFile(fileName);
+
 }

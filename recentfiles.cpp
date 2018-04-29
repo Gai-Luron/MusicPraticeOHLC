@@ -45,9 +45,11 @@ void recentFiles::load(){
         QTextStream stream(&handleFile);
         stream.setCodec("UTF-8");
         while(true){
+
             if( stream.atEnd())
                 break;
-            stream >> lineRead;
+            lineRead = stream.readLine(300);
+            qDebug() << lineRead;
             if( lineRead != "" ){
                 lof.append( lineRead );
             }

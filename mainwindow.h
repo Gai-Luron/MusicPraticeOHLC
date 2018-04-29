@@ -49,6 +49,10 @@ private slots:
 
     void on_recentFilesWidget_itemActivated(QTreeWidgetItem *item, int column);
 
+    void on_openFile_triggered();
+
+    void startNewaudioFile( QString fileName );
+
 private:
     Ui::MainWindow *ui;
 

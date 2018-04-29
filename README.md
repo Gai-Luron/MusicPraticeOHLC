@@ -45,7 +45,7 @@ I am currently a health executive and have been developing programs for many yea
 For personal reasons, I stopped programming as a professional, but I continued to develop, still under GPL license, to have fun.
 <br>I am the author of
 - LFSLapper, LFSRelax, LFSStat which are add-ons for the game Live For Speed ​​written in C #.
-- Gcomp, a championship manager and qualification in HTML, Mysql, PHP interfaced with LFSLapper.
+- Gcomp, a championship manager and qualification in HTML, Mysql, PHP interfaced with LFSLapper. http://www.frh-team.ovh/gcomp/
 - Photonotes. At this address, http://photonotes.musicat.fr/, a tool to improve its speed of reading notes.
 
 I also contributed a bit to the debugging of MuseScore 2. I could even add one or two features.
@@ -55,7 +55,7 @@ Je suis actuellement cadre de santé et je développe des programmes depuis de n
 Pour des raisons personnelles, j'ai arrêté la programmation comme professionnel, mais j'ai continué à développer, toujours sous licence GPL, pour m'amuser.
 <br>Je suis l'auteur de:
 - LFSLapper, LFSRelax, LFSStat qui sont des add-on pour le jeu Live For Speed écrits en C#.  
-- Gcomp, un gestionnaire de championnat et de qualification en HTML, Mysql, PHP interfacé avec LFSLapper.
+- Gcomp, un gestionnaire de championnat et de qualification en HTML, Mysql, PHP interfacé avec LFSLapper. http://www.frh-team.ovh/gcomp/
 - Photonotes. A cette adresse, http://photonotes.musicat.fr/, un outil pour améliorer sa vitesse de lecture de notes.
 
 J'ai aussi un peu contribué au déboggage de MuseScore 2. J'ai même pu y ajouter une ou deux fonctionalités.

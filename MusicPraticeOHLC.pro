@@ -41,3 +41,9 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+DISTFILES += \
+    README.md
+
+RESOURCES += \
+    res.qrc
