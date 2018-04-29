@@ -137,10 +137,9 @@ long long processFile::openSoundFile(QString fileName)
     sfinfo.samplerate = SAMPLE_RATE;
     if( isfileOpen )
         sf_close( file );
-    qDebug() << currFileName.toStdString().c_str();
-    LPCWSTR toto = (LPCWSTR)currFileName.utf16();
+    LPCWSTR LfileName = (LPCWSTR)currFileName.utf16();
 //  file = sf_open( currFileName.toStdString().c_str(),SFM_READ,&sfinfo );
-    file =  sf_wchar_open( toto, SFM_READ, &sfinfo);
+    file =  sf_wchar_open( LfileName, SFM_READ, &sfinfo);
     Q_ASSERT(file != NULL );
     isfileOpen = true;
     totalFrames = 0;

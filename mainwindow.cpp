@@ -188,8 +188,7 @@ void MainWindow::on_openFile_triggered()
     QString fileName;
 
     fileName = QFileDialog::getOpenFileName(this,
-        tr("Ouvrir Fichier Audio"), ".", tr("Fichier Audio (*.wav *.ogg )"));
-    qDebug() << fileName;
+        tr("Ouvrir Fichier Audio"), ".", tr("Fichier Audio (*.wav *.ogg *.flac )"));
     if( fileName != "")
         startNewaudioFile(fileName);
 

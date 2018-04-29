@@ -49,7 +49,6 @@ void recentFiles::load(){
             if( stream.atEnd())
                 break;
             lineRead = stream.readLine(300);
-            qDebug() << lineRead;
             if( lineRead != "" ){
                 lof.append( lineRead );
             }
