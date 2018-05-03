@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     ui->setupUi(this);
+    ui->currentFileRead->setText(tr("Pas de fichier"));
     pFileObj =new processFile();
     pFileObj->bypassStrech = false;
 
@@ -178,7 +179,7 @@ void MainWindow::startNewaudioFile( QString fileName ){
 void MainWindow::on_recentFilesWidget_itemActivated(QTreeWidgetItem *item, int column)
 {
     QString fileName;
-
+    ui->currentFileRead->setText(item->text(0));
     fileName = item->text(3);
     startNewaudioFile(fileName);
 }

@@ -5,6 +5,7 @@
 #include <QElapsedTimer>
 #include <QSemaphore>
 #include <QList>
+#include <QThread>
 
 
 
@@ -224,11 +225,12 @@ error:
 void processFile::play()
 {
     PaError err;
+    fillBufferTimer->start( 0 );
+    QThread::msleep(100);
     err = Pa_StartStream(stream);
     if( err != paNoError )
         goto error;
     isPaused = false;
-    fillBufferTimer->start( 0 );
     return;
 error:
   qDebug() << "An error occured while using the portaudio stream" ;
