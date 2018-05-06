@@ -222,20 +222,23 @@ error:
 ////////////////////////////////////////////////////////////////////////////
 /// \brief processFile::play
 ////////////////////////////////////////////////////////////////////////////
-void processFile::play()
+bool processFile::play()
 {
     PaError err;
+    if( currFileName == "" )
+        return false;
     fillBufferTimer->start( 0 );
     QThread::msleep(100);
     err = Pa_StartStream(stream);
     if( err != paNoError )
         goto error;
     isPaused = false;
-    return;
+    return true;
 error:
   qDebug() << "An error occured while using the portaudio stream" ;
   qDebug() << "Error number: " << err ;
   qDebug() << "Error message: " << Pa_GetErrorText( err ) ;
+  return false;
 }
 ////////////////////////////////////////////////////////////////////////////
 /// \brief processFile::pause

@@ -21,7 +21,7 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" rowspan="4">
+    <item row="0" column="0" rowspan="3">
      <layout class="QVBoxLayout" name="verticalLayout_12">
       <item>
        <widget class="QTabWidget" name="tabWidget">
@@ -212,14 +212,7 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="1">
-     <layout class="QVBoxLayout" name="verticalLayout_11">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-     </layout>
-    </item>
-    <item row="4" column="0" colspan="2">
+    <item row="3" column="0" colspan="2">
      <layout class="QVBoxLayout" name="verticalLayout_13">
       <property name="topMargin">
        <number>9</number>
@@ -449,24 +442,6 @@
         </item>
        </layout>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_9">
-        <item>
-         <widget class="QPushButton" name="butPlay">
-          <property name="text">
-           <string>Play</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="butPause">
-          <property name="text">
-           <string>Pause</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
      </layout>
     </item>
    </layout>
@@ -486,24 +461,50 @@
     </size>
    </property>
    <attribute name="toolBarArea">
-    <enum>LeftToolBarArea</enum>
+    <enum>BottomToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
    <addaction name="separator"/>
    <addaction name="openFile"/>
+   <addaction name="actionPause"/>
+   <addaction name="actionPlay"/>
   </widget>
   <action name="openFile">
    <property name="icon">
     <iconset resource="res.qrc">
-     <normaloff>:/icones/icones/icons8-fichier-audio-64.png</normaloff>:/icones/icones/icons8-fichier-audio-64.png</iconset>
+     <normaloff>:/icones/icones/mediaOpen.png</normaloff>:/icones/icones/mediaOpen.png</iconset>
    </property>
    <property name="text">
     <string>Ouvrir</string>
    </property>
    <property name="toolTip">
     <string>Ouvre un fichier Audio</string>
+   </property>
+  </action>
+  <action name="actionPlay">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icones/icones/mediaPlay.png</normaloff>:/icones/icones/mediaPlay.png</iconset>
+   </property>
+   <property name="text">
+    <string>Play</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icones/icones/mediaPause.png</normaloff>:/icones/icones/mediaPause.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pause</string>
    </property>
   </action>
  </widget>

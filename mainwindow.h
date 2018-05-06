@@ -18,17 +18,8 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_goSound1_clicked();
-
-    void on_goSound2_clicked();
-
-    void on_pushButton_clicked();
 
     void on_checkByPass_stateChanged(int arg1);
-
-    void on_butPlay_clicked();
-
-    void on_butPause_clicked();
 
     void setCurrentTimePlayed(float i);
 
@@ -51,7 +42,13 @@ private slots:
 
     void on_openFile_triggered();
 
-    void startNewaudioFile( QString fileName );
+    void startNewaudioFile( QString fileName, bool launchPlay );
+
+    void on_actionPlay_triggered();
+
+    void on_actionPause_triggered();
+
+    void on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
 private:
     Ui::MainWindow *ui;

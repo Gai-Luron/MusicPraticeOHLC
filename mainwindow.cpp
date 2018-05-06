@@ -72,31 +72,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_goSound1_clicked()
-{
-    QString fileName = "D:/MesDocuments/Dev/MusicPraticeOHLC/Debug/debug/BYTShort.wav";
-    rFiles->addFile(fileName);
-    pFileObj->openSoundFile(fileName);
-    pFileObj->play();
-}
 
-void MainWindow::on_goSound2_clicked()
-{
-    QString fileName = "D:/MesDocuments/Dev/MusicPraticeOHLC/Debug/debug/BYTDessay.wav";
-    rFiles->addFile(fileName);
-    pFileObj->openSoundFile(fileName);
-    pFileObj->play();
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-    QString fileName = "D:/MesDocuments/Dev/MusicPraticeOHLC/Debug/debug/BYT883.ogg";
-    rFiles->addFile(fileName);
-    pFileObj->openSoundFile(fileName);
-//    pFileObj->seek((float)50);
-    pFileObj->play();
-
-}
 
 
 
@@ -109,15 +85,6 @@ void MainWindow::on_checkByPass_stateChanged(int arg1)
 
 }
 
-void MainWindow::on_butPlay_clicked()
-{
-    pFileObj->play();
-}
-
-void MainWindow::on_butPause_clicked()
-{
-    pFileObj->pause();
-}
 
 
 void MainWindow::on_currentTimePlayed_sliderPressed()
@@ -170,18 +137,22 @@ void MainWindow::on_valueSemiTone_editingFinished()
 
 
 }
-void MainWindow::startNewaudioFile( QString fileName ){
+void MainWindow::startNewaudioFile( QString fileName, bool launchPlay ){
     rFiles->addFile(fileName);
     updateRecentFilesWidget();
     pFileObj->openSoundFile(fileName);
-    pFileObj->play();
+    if( launchPlay ){
+        pFileObj->play();
+        ui->actionPlay->setChecked(true);
+    }
+
 }
 void MainWindow::on_recentFilesWidget_itemActivated(QTreeWidgetItem *item, int column)
 {
     QString fileName;
     ui->currentFileRead->setText(item->text(0));
     fileName = item->text(3);
-    startNewaudioFile(fileName);
+    startNewaudioFile(fileName, true);
 }
 
 void MainWindow::on_openFile_triggered()
@@ -191,6 +162,38 @@ void MainWindow::on_openFile_triggered()
     fileName = QFileDialog::getOpenFileName(this,
         tr("Ouvrir Fichier Audio"), ".", tr("Fichier Audio (*.wav *.ogg *.flac )"));
     if( fileName != "")
-        startNewaudioFile(fileName);
+        startNewaudioFile(fileName, true);
+
+}
+
+void MainWindow::on_actionPlay_triggered()
+{
+    if ( ui->actionPlay->isChecked()){
+        if ( !pFileObj->play() ){
+            ui->actionPlay->setChecked(false);
+        }
+    }
+    else{
+        pFileObj->pause();
+    }
+}
+
+void MainWindow::on_actionPause_triggered()
+{
+    pFileObj->pause();
+    ui->actionPlay->setChecked(false);
+}
+
+void MainWindow::on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+    QString fileName;
+    static bool flagFirst = true;
+
+    if( flagFirst ){
+        flagFirst = false;
+        ui->currentFileRead->setText(current->text(0));
+        fileName = current->text(3);
+        pFileObj->openSoundFile(fileName);
+    }
 
 }

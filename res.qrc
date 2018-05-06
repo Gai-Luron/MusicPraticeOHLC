@@ -1,5 +1,17 @@
 <RCC>
     <qresource lang="fr" prefix="/icones">
         <file>icones/icons8-fichier-audio-64.png</file>
+        <file>icones/mediaForward.png</file>
+        <file>icones/mediaNext.png</file>
+        <file>icones/mediaOff.png</file>
+        <file>icones/mediaOpen.png</file>
+        <file>icones/mediaPause.png</file>
+        <file>icones/mediaPlay.png</file>
+        <file>icones/mediaPrevious.png</file>
+        <file>icones/mediaRecord.png</file>
+        <file>icones/mediaRewind.png</file>
+        <file>icones/mediaSkipNext.png</file>
+        <file>icones/mediasSkipPrevious.png</file>
+        <file>icones/mediaStop.png</file>
     </qresource>
 </RCC>

@@ -30,7 +30,7 @@ private:
     };
     QList <posReadFrame> listOfBlock;
     QTime currTimePlayed;
-    QString currFileName;
+    QString currFileName = "";
     long long currFileFrameRead;
     long long currPlayFrameRead;
     long long currPlayedFrameRead;
@@ -56,7 +56,7 @@ public:
                             void *file
                            );
     long long openSoundFile(QString fileName);
-    void play();
+    bool play();
     void seek(long long frameToStart);
     void seek(float percentOfFile );
     void pause();
