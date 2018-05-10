@@ -32,7 +32,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabRecentsFiles">
          <property name="sizePolicy">
@@ -88,7 +88,7 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_15">
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_14">
+                <layout class="QVBoxLayout" name="layoutLoopAll">
                  <item>
                   <widget class="QPushButton" name="pushButton_5">
                    <property name="text">
@@ -105,9 +105,15 @@
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_7">
-                 <item>
-                  <widget class="QPushButton" name="pushButton_6">
+                <layout class="QHBoxLayout" name="horizontalLayout_7"/>
+               </item>
+               <item>
+                <layout class="QGridLayout" name="gridLayoutLoops">
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="3">
+                  <widget class="QPushButton" name="pushButton_8">
                    <property name="text">
                     <string>PushButton</string>
                    </property>
@@ -119,20 +125,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QPushButton" name="pushButton_4">
-                   <property name="text">
-                    <string>PushButton</string>
-                   </property>
-                   <property name="checkable">
-                    <bool>true</bool>
-                   </property>
-                   <property name="autoExclusive">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
+                 <item row="0" column="1">
                   <widget class="QPushButton" name="pushButton_7">
                    <property name="text">
                     <string>PushButton</string>
@@ -145,8 +138,34 @@
                    </property>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QPushButton" name="pushButton_8">
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="pushButton_4">
+                   <property name="text">
+                    <string>PushButton</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="autoExclusive">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QPushButton" name="pushButton_6">
+                   <property name="text">
+                    <string>PushButton</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="autoExclusive">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="pushButton_11">
                    <property name="text">
                     <string>PushButton</string>
                    </property>
@@ -222,6 +241,18 @@
         <property name="font">
          <font>
           <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="currentPathRead">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
          </font>
         </property>
         <property name="text">

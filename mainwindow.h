@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QTreeWidgetItem>
+#include <QLayout>
+#include <QPushButton>
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +25,7 @@ private slots:
 
     void setCurrentTimePlayed(float i);
 
+    void on_push_loop();
 
     void on_currentTimePlayed_sliderPressed();
 
@@ -50,8 +53,13 @@ private slots:
 
     void on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
+
+
 private:
     Ui::MainWindow *ui;
+    QList<QPushButton> listLoopsButtons;
+    void deleteLayout(QLayout *item);
+    void setButtonLoops();
 
 };
 

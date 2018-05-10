@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT      += core gui
+QT      += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,12 +33,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         processfile.cpp \
-        recentfiles.cpp
+        recentfiles.cpp \
+    configaudiofile.cpp
 
 HEADERS += \
         mainwindow.h \
         processfile.h \
-        recentfiles.h
+        recentfiles.h \
+    configaudiofile.h \
+    loopsaudio.h
 
 FORMS += \
         mainwindow.ui

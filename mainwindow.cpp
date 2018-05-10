@@ -1,14 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "processfile.h"
+#include "configaudiofile.h"
 #include "recentfiles.h"
 #include <QDebug>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QPushButton>
+
 
 
 processFile *pFileObj;
+configAudioFile *cfAF;
 recentFiles *rFiles;
+
 bool flagUpdateSliderTimePlayed = true;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -19,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     ui->currentFileRead->setText(tr("Pas de fichier"));
+    ui->currentPathRead->setText("");
+
+    cfAF = new configAudioFile();
+
     pFileObj =new processFile();
     pFileObj->bypassStrech = false;
 
@@ -29,6 +38,43 @@ MainWindow::MainWindow(QWidget *parent) :
 
     updateRecentFilesWidget();
 
+
+}
+void MainWindow::setButtonLoops(){
+    static QPushButton *pButton[100];
+
+    deleteLayout(ui->layoutLoopAll);
+    deleteLayout( ui->gridLayoutLoops);
+
+    listLoopsButtons.clear();
+    for( int i = 0; i < cfAF->currConfigAudioFile.nbLoops;i++){
+        pButton[i] = new QPushButton(this);
+        pButton[i]->setProperty("myId",i);
+        pButton[i]->setText(cfAF->currConfigAudioFile.loopsAudio[i].loopName);
+        if( i == 0){
+            ui->layoutLoopAll->addWidget(pButton[i]);
+        }
+        else{
+            ui->gridLayoutLoops->addWidget(pButton[i],(i-1)/4,(i-1)%4);
+        }
+        connect(pButton[i],SIGNAL(clicked()), this,SLOT(on_push_loop()));
+    }
+}
+void MainWindow::deleteLayout(QLayout *item){
+    while (item->count() > 0) {
+        QLayoutItem *child = item->takeAt(0);
+        if (child == 00) continue;
+        if (child->layout() != 0) deleteLayout(child->layout());
+        if (child->widget()) delete child->widget();
+        delete child;
+    }
+}
+void MainWindow::on_push_loop(){
+    QVariant myId = sender()->property("myId");
+     if (myId.isValid()) {
+       int idx = myId.toInt();
+       qDebug() << "Index" << idx << " nom du Boutton Pressé = " << cfAF->currConfigAudioFile.loopsAudio[idx].loopName;
+     }
 
 }
 void MainWindow::updateRecentFilesWidget(){
@@ -71,8 +117,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-
 
 
 
@@ -141,6 +185,8 @@ void MainWindow::startNewaudioFile( QString fileName, bool launchPlay ){
     rFiles->addFile(fileName);
     updateRecentFilesWidget();
     pFileObj->openSoundFile(fileName);
+    cfAF->setFilename(fileName);
+    setButtonLoops();
     if( launchPlay ){
         pFileObj->play();
         ui->actionPlay->setChecked(true);
@@ -151,6 +197,7 @@ void MainWindow::on_recentFilesWidget_itemActivated(QTreeWidgetItem *item, int c
 {
     QString fileName;
     ui->currentFileRead->setText(item->text(0));
+    ui->currentPathRead->setText(item->text(2));
     fileName = item->text(3);
     startNewaudioFile(fileName, true);
 }
@@ -192,8 +239,11 @@ void MainWindow::on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *curren
     if( flagFirst ){
         flagFirst = false;
         ui->currentFileRead->setText(current->text(0));
+        ui->currentPathRead->setText(current->text(2));
         fileName = current->text(3);
         pFileObj->openSoundFile(fileName);
+        cfAF->setFilename(fileName);
+        setButtonLoops();
     }
 
 }
