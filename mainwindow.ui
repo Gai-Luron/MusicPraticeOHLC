@@ -32,7 +32,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabRecentsFiles">
          <property name="sizePolicy">
@@ -46,7 +46,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
-           <widget class="QTreeWidget" name="recentFilesWidget">
+           <widget class="QRecentsFilesTree" name="recentFilesWidget">
             <property name="alternatingRowColors">
              <bool>false</bool>
             </property>
@@ -540,6 +540,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QRecentsFilesTree</class>
+   <extends>QTreeWidget</extends>
+   <header>QRecentsFilesTree.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="res.qrc"/>
  </resources>

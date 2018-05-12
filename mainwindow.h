@@ -20,6 +20,7 @@ public:
     ~MainWindow();
 
 private slots:
+    void filesDropped(QStringList* fileList);
 
     void on_checkByPass_stateChanged(int arg1);
 

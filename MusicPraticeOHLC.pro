@@ -34,14 +34,16 @@ SOURCES += \
         mainwindow.cpp \
         processfile.cpp \
         recentfiles.cpp \
-    configaudiofile.cpp
+    configaudiofile.cpp \
+    QRecentsFilesTree.cpp
 
 HEADERS += \
         mainwindow.h \
         processfile.h \
         recentfiles.h \
     configaudiofile.h \
-    loopsaudio.h
+    loopsaudio.h \
+    QRecentsFilesTree.h
 
 FORMS += \
         mainwindow.ui

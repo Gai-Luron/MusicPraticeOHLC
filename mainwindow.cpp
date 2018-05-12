@@ -35,10 +35,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->valueTempo->setText(QString::number(ui->sliderTempo->value()));
     ui->valueSemiTone->setText(QString::number(ui->sliderPitch->value()));
+    ui->recentFilesWidget->addAllowedExtension("wav");
+    ui->recentFilesWidget->addAllowedExtension("ogg");
+    ui->recentFilesWidget->addAllowedExtension("flac");
+    connect(ui->recentFilesWidget,SIGNAL(filesListDropped(QStringList*)),this,SLOT(filesDropped(QStringList*)));
 
     updateRecentFilesWidget();
 
 
+}
+void MainWindow::filesDropped(QStringList* fileList ){
+    for(int i = fileList->count()-1; i >= 0; i--){
+        rFiles->addFile(fileList->at(i));
+    }
+    startNewaudioFile(fileList->at(0),true);
 }
 void MainWindow::setButtonLoops(){
     static QPushButton *pButton[100];
