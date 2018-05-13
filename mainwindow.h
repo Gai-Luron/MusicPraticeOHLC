@@ -6,6 +6,7 @@
 #include <QTreeWidgetItem>
 #include <QLayout>
 #include <QPushButton>
+#include "QPusButtonLoop.h"
 
 namespace Ui {
 class MainWindow;
@@ -55,6 +56,8 @@ private slots:
     void on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
 
+
+    void on_pushButton_10_clicked();
 
 private:
     Ui::MainWindow *ui;

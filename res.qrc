@@ -1,5 +1,5 @@
 <RCC>
-    <qresource lang="fr" prefix="/icones">
+    <qresource prefix="/icones" lang="fr">
         <file>icones/icons8-fichier-audio-64.png</file>
         <file>icones/mediaForward.png</file>
         <file>icones/mediaNext.png</file>
@@ -13,5 +13,6 @@
         <file>icones/mediaSkipNext.png</file>
         <file>icones/mediasSkipPrevious.png</file>
         <file>icones/mediaStop.png</file>
+        <file alias="Loop-icon">icones/Loop-icon.png</file>
     </qresource>
 </RCC>

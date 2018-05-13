@@ -51,14 +51,15 @@ void MainWindow::filesDropped(QStringList* fileList ){
     startNewaudioFile(fileList->at(0),true);
 }
 void MainWindow::setButtonLoops(){
-    static QPushButton *pButton[100];
+    static QPushButtonLoop *pButton[100];
 
     deleteLayout(ui->layoutLoopAll);
     deleteLayout( ui->gridLayoutLoops);
 
     listLoopsButtons.clear();
     for( int i = 0; i < cfAF->currConfigAudioFile.nbLoops;i++){
-        pButton[i] = new QPushButton(this);
+        pButton[i] = new QPushButtonLoop(this);
+        pButton[i]->setObjectName("Bloop" + QString::number(i));
         pButton[i]->setProperty("myId",i);
         pButton[i]->setText(cfAF->currConfigAudioFile.loopsAudio[i].loopName);
         if( i == 0){
@@ -255,5 +256,10 @@ void MainWindow::on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *curren
         cfAF->setFilename(fileName);
         setButtonLoops();
     }
+
+}
+
+void MainWindow::on_pushButton_10_clicked()
+{
 
 }
