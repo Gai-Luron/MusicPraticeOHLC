@@ -1,6 +1,5 @@
 #ifndef LOOPSAUDIO_H
 #define LOOPSAUDIO_H
-#define MAX_LOOPS 100
 
 struct loopAudio{
     QString loopName;
@@ -11,8 +10,7 @@ struct loopAudio{
 };
 struct configAudio {
     QString fileName;
-    int nbLoops;
-    loopAudio loopsAudio[MAX_LOOPS];
+    QList<loopAudio> loopsAudioList;
 };
 
 #endif // LOOPSAUDIO_H

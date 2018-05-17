@@ -6,6 +6,7 @@
 #include <QTreeWidgetItem>
 #include <QLayout>
 #include <QPushButton>
+#include <QTimer>
 #include "QPusButtonLoop.h"
 
 namespace Ui {
@@ -22,6 +23,10 @@ public:
 
 private slots:
     void filesDropped(QStringList* fileList);
+
+    void droppedLoopButOnOtherLoopBut( int orig, int dest);
+
+    void doSwapButtonLoop();
 
     void on_checkByPass_stateChanged(int arg1);
 
@@ -56,14 +61,18 @@ private slots:
     void on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
 
-
     void on_pushButton_10_clicked();
+
+    void on_pushButton_9_clicked();
 
 private:
     Ui::MainWindow *ui;
     QList<QPushButton> listLoopsButtons;
     void deleteLayout(QLayout *item);
     void setButtonLoops();
+    QTimer *swapButtonLoop;
+    int origButton = -1;
+    int destButton = -1;
 
 };
 

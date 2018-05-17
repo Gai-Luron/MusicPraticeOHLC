@@ -57,17 +57,18 @@ void configAudioFile::getConfig(QDomElement domElement ){
     QDomElement name = domElement.firstChildElement("fileName");
     QDomElement domLoop = domElement.firstChildElement("loops");
     domLoop = domLoop.firstChildElement("loop");
-    currConfigAudioFile.nbLoops = 0;
+    currConfigAudioFile.loopsAudioList.clear();
     while(!domLoop.isNull()){
-        currConfigAudioFile.loopsAudio[currConfigAudioFile.nbLoops].loopName = domLoop.firstChildElement("name").text();
-        currConfigAudioFile.loopsAudio[currConfigAudioFile.nbLoops].beginLoop = domLoop.firstChildElement("beginLoop").text().toFloat();
-        currConfigAudioFile.loopsAudio[currConfigAudioFile.nbLoops].endLoop = domLoop.firstChildElement("endLoop").text().toFloat();
-        currConfigAudioFile.loopsAudio[currConfigAudioFile.nbLoops].tempo = domLoop.firstChildElement("tempo").text().toFloat();
-        currConfigAudioFile.loopsAudio[currConfigAudioFile.nbLoops].semiTones = domLoop.firstChildElement("semiTones").text().toInt();
+        loopAudio tmpLoopAudio;
+        tmpLoopAudio.loopName = domLoop.firstChildElement("name").text();
+        tmpLoopAudio.beginLoop = domLoop.firstChildElement("beginLoop").text().toFloat();
+        tmpLoopAudio.endLoop = domLoop.firstChildElement("endLoop").text().toFloat();
+        tmpLoopAudio.tempo = domLoop.firstChildElement("tempo").text().toFloat();
+        tmpLoopAudio.semiTones = domLoop.firstChildElement("semiTones").text().toInt();
+        currConfigAudioFile.loopsAudioList.append(tmpLoopAudio);
+
         domLoop = domLoop.nextSiblingElement("loop");
-        currConfigAudioFile.nbLoops++;
     }
-//    qDebug() << "Nb Loops of " << currConfigAudioFile.fileName << " = " << currConfigAudioFile.nbLoops;
 }
 /*
 void configAudioFile::getTempo(QString loopName ){

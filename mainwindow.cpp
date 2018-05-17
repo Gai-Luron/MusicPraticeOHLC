@@ -10,6 +10,8 @@
 
 
 
+
+
 processFile *pFileObj;
 configAudioFile *cfAF;
 recentFiles *rFiles;
@@ -39,16 +41,32 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->recentFilesWidget->addAllowedExtension("ogg");
     ui->recentFilesWidget->addAllowedExtension("flac");
     connect(ui->recentFilesWidget,SIGNAL(filesListDropped(QStringList*)),this,SLOT(filesDropped(QStringList*)));
-
     updateRecentFilesWidget();
+    swapButtonLoop = new QTimer( this );
+    swapButtonLoop->connect(swapButtonLoop, SIGNAL(timeout()),this, SLOT(doSwapButtonLoop()));
+
 
 
 }
+
 void MainWindow::filesDropped(QStringList* fileList ){
     for(int i = fileList->count()-1; i >= 0; i--){
         rFiles->addFile(fileList->at(i));
     }
     startNewaudioFile(fileList->at(0),true);
+}
+
+void MainWindow::droppedLoopButOnOtherLoopBut( int orig, int dest)
+{
+
+    cfAF->currConfigAudioFile.loopsAudioList.move(orig,dest);
+    swapButtonLoop->start(10);
+
+    qDebug() << orig << ":" << dest;
+}
+void MainWindow::doSwapButtonLoop(){
+    swapButtonLoop->stop();
+    setButtonLoops();
 }
 void MainWindow::setButtonLoops(){
     static QPushButtonLoop *pButton[100];
@@ -57,11 +75,12 @@ void MainWindow::setButtonLoops(){
     deleteLayout( ui->gridLayoutLoops);
 
     listLoopsButtons.clear();
-    for( int i = 0; i < cfAF->currConfigAudioFile.nbLoops;i++){
+    for( int i = 0; i < cfAF->currConfigAudioFile.loopsAudioList.count();i++){
+        qDebug() << i << ":" << cfAF->currConfigAudioFile.loopsAudioList.count();
         pButton[i] = new QPushButtonLoop(this);
         pButton[i]->setObjectName("Bloop" + QString::number(i));
         pButton[i]->setProperty("myId",i);
-        pButton[i]->setText(cfAF->currConfigAudioFile.loopsAudio[i].loopName);
+        pButton[i]->setText(cfAF->currConfigAudioFile.loopsAudioList.at(i).loopName);
         if( i == 0){
             ui->layoutLoopAll->addWidget(pButton[i]);
         }
@@ -69,6 +88,7 @@ void MainWindow::setButtonLoops(){
             ui->gridLayoutLoops->addWidget(pButton[i],(i-1)/4,(i-1)%4);
         }
         connect(pButton[i],SIGNAL(clicked()), this,SLOT(on_push_loop()));
+        connect(pButton[i], SIGNAL(changePosButtonLoop(int,int)),this,SLOT(droppedLoopButOnOtherLoopBut(int,int)));
     }
 }
 void MainWindow::deleteLayout(QLayout *item){
@@ -84,7 +104,7 @@ void MainWindow::on_push_loop(){
     QVariant myId = sender()->property("myId");
      if (myId.isValid()) {
        int idx = myId.toInt();
-       qDebug() << "Index" << idx << " nom du Boutton Pressé = " << cfAF->currConfigAudioFile.loopsAudio[idx].loopName;
+       qDebug() << "Index" << idx << " nom du Boutton Pressé = " << cfAF->currConfigAudioFile.loopsAudioList.at(idx).loopName;
      }
 
 }
@@ -261,5 +281,11 @@ void MainWindow::on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *curren
 
 void MainWindow::on_pushButton_10_clicked()
 {
+
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    setButtonLoops();
 
 }

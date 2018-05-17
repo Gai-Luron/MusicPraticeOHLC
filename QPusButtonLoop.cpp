@@ -47,8 +47,9 @@ void QPushButtonLoop::dropEvent(QDropEvent *event){
 
     if (origMyId.isValid()) {
         if( origMyId.toInt() != destMyId.toInt() && destMyId.toInt() != 0){
+            qDebug() << "Debut emit";
             emit changePosButtonLoop(origMyId.toInt(), destMyId.toInt() ) ;
-            qDebug() << origMyId.toInt() << " Sur " << destMyId.toInt();
+            qDebug() << "Fin emit";
         }
     }
 }
