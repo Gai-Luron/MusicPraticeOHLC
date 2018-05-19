@@ -87,7 +87,7 @@ void MainWindow::setButtonLoops(){
         else{
             ui->gridLayoutLoops->addWidget(pButton[i],(i-1)/4,(i-1)%4);
         }
-        connect(pButton[i],SIGNAL(clicked()), this,SLOT(on_push_loop()));
+        connect(pButton[i],SIGNAL(clicked()), this,SLOT(pushButtonLoop()));
         connect(pButton[i], SIGNAL(changePosButtonLoop(int,int)),this,SLOT(droppedLoopButOnOtherLoopBut(int,int)));
     }
 }
@@ -100,7 +100,7 @@ void MainWindow::deleteLayout(QLayout *item){
         delete child;
     }
 }
-void MainWindow::on_push_loop(){
+void MainWindow::pushButtonLoop(){
     QVariant myId = sender()->property("myId");
      if (myId.isValid()) {
        int idx = myId.toInt();

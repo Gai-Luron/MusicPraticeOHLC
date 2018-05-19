@@ -21,8 +21,17 @@ public:
     void setFilename(QString fileName);
     configAudio currConfigAudioFile;
 
+
 private:
     void getConfig(QDomElement domElement );
+    void saveDom(QString configFileName);
+    bool getDomAudioFile( QString fileName, QDomElement* domReturn );
+    bool createDefaultConfigFile( QString configFilename );
+    void getQDomAudioFile( QString fileName );
+    void createLoopXML( QString fileName, QString name,float beginLoop, float endLoop, int tempo, int semitone );
+    void createAudioFileXML( QString fileName );
+
+
 
     QString pathData;
     QDomDocument *dom;

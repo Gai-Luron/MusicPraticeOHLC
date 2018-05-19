@@ -32,7 +32,7 @@ private slots:
 
     void setCurrentTimePlayed(float i);
 
-    void on_push_loop();
+    void pushButtonLoop();
 
     void on_currentTimePlayed_sliderPressed();
 
