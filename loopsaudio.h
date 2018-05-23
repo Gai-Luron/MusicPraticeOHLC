@@ -10,6 +10,7 @@ struct loopAudio{
 };
 struct configAudio {
     QString fileName;
+    QString configFileName;
     QList<loopAudio> loopsAudioList;
 };
 

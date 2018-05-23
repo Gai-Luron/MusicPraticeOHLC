@@ -20,19 +20,45 @@ configAudioFile::configAudioFile()
 
 
 }
-void configAudioFile::setFilename(QString fileName){
+void configAudioFile::saveConfig()
+{
+    QDomElement domAudioFile;
+    getDomAudioFile(audioFile.fileName,&domAudioFile );
+    QDomElement XML_loops = domAudioFile.firstChildElement("loops");
+    XML_loops.parentNode().removeChild(XML_loops);
+    XML_loops = dom->createElement("loops");
+    domAudioFile.appendChild(XML_loops);
 
-    bool findElement;
-    currConfigAudioFile.fileName = fileName;
+
+
+    for( int i = 0; i < audioFile.loopsAudioList.count();i++){
+        createLoopXML(audioFile.fileName,
+                      audioFile.loopsAudioList.at(i).loopName,
+                      audioFile.loopsAudioList.at(i).beginLoop,
+                      audioFile.loopsAudioList.at(i).endLoop,
+                      audioFile.loopsAudioList.at(i).tempo,
+                      audioFile.loopsAudioList.at(i).semiTones
+        );
+    }
+
+
+    saveDom( );
+
+}
+
+void configAudioFile::loadConfig(QString fileName){
+
+    audioFile.fileName = fileName;
     QFileInfo QF;
     QF.setFile(fileName);
-    QString configFileName = pathData + "/" + QF.completeBaseName() + ".xml";
-    QFile xml_doc(configFileName);
+    audioFile.configFileName = pathData + "/" + QF.completeBaseName() + ".xml";
+
+    QFile xml_doc(audioFile.configFileName);
 retry:
     if(!xml_doc.open(QIODevice::ReadWrite))// Si l'on n'arrive pas à ouvrir le fichier XML.
     {
          QMessageBox::warning(this,tr("Erreur à l'ouverture du document XML")
-                ,tr("Le document XML ") + configFileName + tr(" n'a pas pu être ouvert ou créé.")
+                ,tr("Le document XML ") + audioFile.configFileName + tr(" n'a pas pu être ouvert ou créé.")
          );
          return;
     }
@@ -40,7 +66,7 @@ retry:
     {
 
         xml_doc.close();
-        if( createDefaultConfigFile(configFileName) )
+        if( createDefaultConfigFile(audioFile.configFileName) )
             goto retry;
          QMessageBox::warning(this,"Erreur à l'ouverture du document XML","Le document XML n'a pas pu être attribué à l'objet QDomDocument.");
          return;
@@ -50,16 +76,33 @@ retryDom:
     QDomElement domAudioFile;
     if ( getDomAudioFile(fileName,&domAudioFile ) == false){
         createAudioFileXML(fileName);
-        createLoopXML(fileName,"All",0,100,0,0);
-        saveDom( configFileName );
+        createLoopXML(fileName,"All",0,100,100,0);
+        createLoopXML(fileName,"1",0,100,100,0);
+        createLoopXML(fileName,"2",0,100,100,0);
+        saveDom( );
         goto retryDom;
     }
 
-    getConfig(domAudioFile);
+    QDomElement name = domAudioFile.firstChildElement("fileName");
+    QDomElement domLoop = domAudioFile.firstChildElement("loops");
+    domLoop = domLoop.firstChildElement("loop");
+    audioFile.loopsAudioList.clear();
+    while(!domLoop.isNull()){
+        loopAudio tmpLoopAudio;
+        tmpLoopAudio.loopName = domLoop.firstChildElement("name").text();
+        tmpLoopAudio.beginLoop = domLoop.firstChildElement("beginLoop").text().toFloat();
+        tmpLoopAudio.endLoop = domLoop.firstChildElement("endLoop").text().toFloat();
+        tmpLoopAudio.tempo = domLoop.firstChildElement("tempo").text().toFloat();
+        tmpLoopAudio.semiTones = domLoop.firstChildElement("semiTones").text().toInt();
+        audioFile.loopsAudioList.append(tmpLoopAudio);
+
+        domLoop = domLoop.nextSiblingElement("loop");
+    }
+
 }
-void configAudioFile::saveDom(QString configFileName)
+void configAudioFile::saveDom()
 {
-    QFile data(configFileName);
+    QFile data(audioFile.configFileName);
     if( data.open(QFile::WriteOnly | QFile::Truncate))
     {
         QTextStream out(&data);
@@ -131,9 +174,9 @@ void configAudioFile::createLoopXML( QString fileName, QString name,float beginL
     XML_txt = dom->createTextNode(QString::number(endLoop));
     XML_endLoop.appendChild(XML_txt);
     XML_txt = dom->createTextNode(QString::number(tempo));
-    XML_endLoop.appendChild(XML_txt);
+    XML_tempo.appendChild(XML_txt);
     XML_txt = dom->createTextNode(QString::number(semitone));
-    XML_endLoop.appendChild(XML_txt);
+    XML_semiTones.appendChild(XML_txt);
 
 }
 bool configAudioFile::createDefaultConfigFile( QString configFileName )
@@ -142,28 +185,9 @@ bool configAudioFile::createDefaultConfigFile( QString configFileName )
     dom->appendChild(node);
     QDomElement XML_audioFiles = dom->createElement("audioFiles");
     dom->appendChild(XML_audioFiles);
-    saveDom(configFileName);
+    saveDom();
     return true;
 
-}
-void configAudioFile::getConfig(QDomElement domElement )
-{
-
-    QDomElement name = domElement.firstChildElement("fileName");
-    QDomElement domLoop = domElement.firstChildElement("loops");
-    domLoop = domLoop.firstChildElement("loop");
-    currConfigAudioFile.loopsAudioList.clear();
-    while(!domLoop.isNull()){
-        loopAudio tmpLoopAudio;
-        tmpLoopAudio.loopName = domLoop.firstChildElement("name").text();
-        tmpLoopAudio.beginLoop = domLoop.firstChildElement("beginLoop").text().toFloat();
-        tmpLoopAudio.endLoop = domLoop.firstChildElement("endLoop").text().toFloat();
-        tmpLoopAudio.tempo = domLoop.firstChildElement("tempo").text().toFloat();
-        tmpLoopAudio.semiTones = domLoop.firstChildElement("semiTones").text().toInt();
-        currConfigAudioFile.loopsAudioList.append(tmpLoopAudio);
-
-        domLoop = domLoop.nextSiblingElement("loop");
-    }
 }
 /*
 void configAudioFile::getTempo(QString loopName ){

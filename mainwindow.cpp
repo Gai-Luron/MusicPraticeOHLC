@@ -13,7 +13,7 @@
 
 
 processFile *pFileObj;
-configAudioFile *cfAF;
+configAudioFile *currConfigAudioFile;
 recentFiles *rFiles;
 
 bool flagUpdateSliderTimePlayed = true;
@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->currentFileRead->setText(tr("Pas de fichier"));
     ui->currentPathRead->setText("");
 
-    cfAF = new configAudioFile();
+    currConfigAudioFile = new configAudioFile();
 
     pFileObj =new processFile();
     pFileObj->bypassStrech = false;
@@ -42,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->recentFilesWidget->addAllowedExtension("flac");
     connect(ui->recentFilesWidget,SIGNAL(filesListDropped(QStringList*)),this,SLOT(filesDropped(QStringList*)));
     updateRecentFilesWidget();
-    swapButtonLoop = new QTimer( this );
-    swapButtonLoop->connect(swapButtonLoop, SIGNAL(timeout()),this, SLOT(doSwapButtonLoop()));
+    delayedSetButtonLoop = new QTimer( this );
+    delayedSetButtonLoop->connect(delayedSetButtonLoop, SIGNAL(timeout()),this, SLOT(doDelayedSetButtonLoop()));
 
 
 
@@ -56,31 +56,53 @@ void MainWindow::filesDropped(QStringList* fileList ){
     startNewaudioFile(fileList->at(0),true);
 }
 
-void MainWindow::droppedLoopButOnOtherLoopBut( int orig, int dest)
+void MainWindow::doubleClickLoopBut( int i )
 {
-
-    cfAF->currConfigAudioFile.loopsAudioList.move(orig,dest);
-    swapButtonLoop->start(10);
-
-    qDebug() << orig << ":" << dest;
-}
-void MainWindow::doSwapButtonLoop(){
-    swapButtonLoop->stop();
+    // Initialize to Fresh Button
     setButtonLoops();
+
+    qle = new QLineEdit(pButton[i]->text(), pButton[i]);
+    qle->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    qle->setAlignment(Qt::AlignHCenter);
+    qle->setProperty("myId",i);
+    hbl = new QVBoxLayout();
+    hbl->setContentsMargins(8,4,8,4);
+    pButton[i]->setLayout(hbl);
+    hbl->addWidget(qle);
+    qle->setFocus();
+    qle->connect(qle,SIGNAL(editingFinished()),this, SLOT(editedNameLoop()));
+
+}
+void MainWindow::editedNameLoop( )
+{
+    qDebug() << "Le nouveau Texte est "  << qle->text();
+    int idx = qle->property("myId").toInt();
+    currConfigAudioFile->audioFile.loopsAudioList[idx].loopName = qle->text();
+    delayedSetButtonLoop->start(10);
+}
+void MainWindow::droppedLoopButOnOtherLoopBut( int orig, int dest)
+    {
+
+    currConfigAudioFile->audioFile.loopsAudioList.move(orig,dest);
+    delayedSetButtonLoop->start(10);
+
+//    qDebug() << orig << ":" << dest;
+}
+void MainWindow::doDelayedSetButtonLoop(){
+    delayedSetButtonLoop->stop();
+    setButtonLoops();
+    currConfigAudioFile->saveConfig();
 }
 void MainWindow::setButtonLoops(){
-    static QPushButtonLoop *pButton[100];
 
     deleteLayout(ui->layoutLoopAll);
     deleteLayout( ui->gridLayoutLoops);
 
-    listLoopsButtons.clear();
-    for( int i = 0; i < cfAF->currConfigAudioFile.loopsAudioList.count();i++){
-        qDebug() << i << ":" << cfAF->currConfigAudioFile.loopsAudioList.count();
+    for( int i = 0; i < currConfigAudioFile->audioFile.loopsAudioList.count();i++){
         pButton[i] = new QPushButtonLoop(this);
         pButton[i]->setObjectName("Bloop" + QString::number(i));
         pButton[i]->setProperty("myId",i);
-        pButton[i]->setText(cfAF->currConfigAudioFile.loopsAudioList.at(i).loopName);
+        pButton[i]->setText(currConfigAudioFile->audioFile.loopsAudioList.at(i).loopName);
         if( i == 0){
             ui->layoutLoopAll->addWidget(pButton[i]);
         }
@@ -89,6 +111,7 @@ void MainWindow::setButtonLoops(){
         }
         connect(pButton[i],SIGNAL(clicked()), this,SLOT(pushButtonLoop()));
         connect(pButton[i], SIGNAL(changePosButtonLoop(int,int)),this,SLOT(droppedLoopButOnOtherLoopBut(int,int)));
+        connect(pButton[i], SIGNAL(doubleClick(int)), this,SLOT(doubleClickLoopBut(int)) );
     }
 }
 void MainWindow::deleteLayout(QLayout *item){
@@ -104,7 +127,6 @@ void MainWindow::pushButtonLoop(){
     QVariant myId = sender()->property("myId");
      if (myId.isValid()) {
        int idx = myId.toInt();
-       qDebug() << "Index" << idx << " nom du Boutton Pressé = " << cfAF->currConfigAudioFile.loopsAudioList.at(idx).loopName;
      }
 
 }
@@ -189,14 +211,15 @@ void MainWindow::on_valueTempo_editingFinished()
 
 void MainWindow::on_sliderPitch_valueChanged(int value)
 {
-    ui->valueSemiTone->setText(QString::number(ui->sliderPitch->value()));
-    pFileObj->setPitchSemiTones(ui->sliderPitch->value());
+    ui->valueSemiTone->setText(QString::number(value));
+    qDebug() << ui->sliderPitch->value() << " et " << value;
+    pFileObj->setPitchSemiTones(value);
 }
 
 void MainWindow::on_sliderTempo_valueChanged(int value)
 {
-    ui->valueTempo->setText(QString::number(ui->sliderTempo->value()));
-    pFileObj->setTempo(ui->sliderTempo->value());
+    ui->valueTempo->setText(QString::number(value));
+    pFileObj->setTempo(value);
 
 }
 
@@ -216,7 +239,7 @@ void MainWindow::startNewaudioFile( QString fileName, bool launchPlay ){
     rFiles->addFile(fileName);
     updateRecentFilesWidget();
     pFileObj->openSoundFile(fileName);
-    cfAF->setFilename(fileName);
+    currConfigAudioFile->loadConfig(fileName);
     setButtonLoops();
     if( launchPlay ){
         pFileObj->play();
@@ -273,7 +296,7 @@ void MainWindow::on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *curren
         ui->currentPathRead->setText(current->text(2));
         fileName = current->text(3);
         pFileObj->openSoundFile(fileName);
-        cfAF->setFilename(fileName);
+        currConfigAudioFile->loadConfig(fileName);
         setButtonLoops();
     }
 
@@ -286,6 +309,4 @@ void MainWindow::on_pushButton_10_clicked()
 
 void MainWindow::on_pushButton_9_clicked()
 {
-    setButtonLoops();
-
 }

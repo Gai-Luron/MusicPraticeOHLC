@@ -20,10 +20,12 @@ protected:
     void dropEvent(QDropEvent *event);
     void dragMoveEvent(QDragMoveEvent *event) override;
     void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent* event);
 
 
 signals:
     void changePosButtonLoop(int origMyId, int destMyId ) ;
+    void doubleClick(int myId);
 
 };
 

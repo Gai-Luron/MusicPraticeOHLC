@@ -22,11 +22,15 @@ public:
     ~MainWindow();
 
 private slots:
+    void editedNameLoop( );
+
     void filesDropped(QStringList* fileList);
 
     void droppedLoopButOnOtherLoopBut( int orig, int dest);
 
-    void doSwapButtonLoop();
+    void doubleClickLoopBut(int);
+
+    void doDelayedSetButtonLoop();
 
     void on_checkByPass_stateChanged(int arg1);
 
@@ -66,13 +70,16 @@ private slots:
     void on_pushButton_9_clicked();
 
 private:
+    QPushButtonLoop *pButton[100];
     Ui::MainWindow *ui;
-    QList<QPushButton> listLoopsButtons;
     void deleteLayout(QLayout *item);
     void setButtonLoops();
-    QTimer *swapButtonLoop;
+    QTimer *delayedSetButtonLoop;
+    QTimer *endEditButtonLoop;
     int origButton = -1;
     int destButton = -1;
+    QLineEdit *qle;
+    QVBoxLayout *hbl;
 
 };
 

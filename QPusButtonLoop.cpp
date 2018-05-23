@@ -24,16 +24,17 @@ void QPushButtonLoop::mousePressEvent(QMouseEvent *event)
 
         Qt::DropAction dropAction = drag->exec();
     }
+
 }
 QPushButtonLoop::QPushButtonLoop(QWidget *parent) : QPushButton(parent)
 {
     setAcceptDrops(true);
 }
 void QPushButtonLoop::dragEnterEvent(QDragEnterEvent *event){
-
     if (event->mimeData()->hasFormat("application/QPushbutton") ){
         event->acceptProposedAction();
     }
+
 }
 void QPushButtonLoop::dragMoveEvent(QDragMoveEvent *event)
 {
@@ -47,9 +48,13 @@ void QPushButtonLoop::dropEvent(QDropEvent *event){
 
     if (origMyId.isValid()) {
         if( origMyId.toInt() != destMyId.toInt() && destMyId.toInt() != 0){
-            qDebug() << "Debut emit";
+//            qDebug() << "Debut emit";
             emit changePosButtonLoop(origMyId.toInt(), destMyId.toInt() ) ;
-            qDebug() << "Fin emit";
+//            qDebug() << "Fin emit";
         }
     }
+}
+void QPushButtonLoop::mouseDoubleClickEvent(QMouseEvent* event){
+    emit doubleClick(this->property(("myId")).toInt());
+//    qDebug() << "Button::mouseDoubleClickEvent";
 }

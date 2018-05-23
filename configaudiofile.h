@@ -18,13 +18,13 @@ class configAudioFile : public QWidget
 
 public:
     configAudioFile();
-    void setFilename(QString fileName);
-    configAudio currConfigAudioFile;
+    void loadConfig(QString fileName);
+    void saveConfig();
+    configAudio audioFile;
 
 
 private:
-    void getConfig(QDomElement domElement );
-    void saveDom(QString configFileName);
+    void saveDom();
     bool getDomAudioFile( QString fileName, QDomElement* domReturn );
     bool createDefaultConfigFile( QString configFilename );
     void getQDomAudioFile( QString fileName );
