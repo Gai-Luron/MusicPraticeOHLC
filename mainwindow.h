@@ -7,7 +7,7 @@
 #include <QLayout>
 #include <QPushButton>
 #include <QTimer>
-#include "QPusButtonLoop.h"
+#include "QPushButtonLoop.h"
 
 namespace Ui {
 class MainWindow;

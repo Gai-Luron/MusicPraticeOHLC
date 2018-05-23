@@ -36,7 +36,7 @@ SOURCES += \
         recentfiles.cpp \
     configaudiofile.cpp \
     QRecentsFilesTree.cpp \
-    QPusButtonLoop.cpp
+    QPushButtonLoop.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,7 +45,7 @@ HEADERS += \
     configaudiofile.h \
     loopsaudio.h \
     QRecentsFilesTree.h \
-    QPusButtonLoop.h
+    QPushButtonLoop.h
 
 FORMS += \
         mainwindow.ui

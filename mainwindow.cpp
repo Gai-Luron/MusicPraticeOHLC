@@ -9,9 +9,6 @@
 #include <QPushButton>
 
 
-
-
-
 processFile *pFileObj;
 configAudioFile *currConfigAudioFile;
 recentFiles *rFiles;
@@ -59,6 +56,7 @@ void MainWindow::filesDropped(QStringList* fileList ){
 void MainWindow::doubleClickLoopBut( int i )
 {
     // Initialize to Fresh Button
+    currConfigAudioFile->setSelected( i );
     setButtonLoops();
 
     qle = new QLineEdit(pButton[i]->text(), pButton[i]);
@@ -75,10 +73,12 @@ void MainWindow::doubleClickLoopBut( int i )
 }
 void MainWindow::editedNameLoop( )
 {
-    qDebug() << "Le nouveau Texte est "  << qle->text();
     int idx = qle->property("myId").toInt();
     currConfigAudioFile->audioFile.loopsAudioList[idx].loopName = qle->text();
-    delayedSetButtonLoop->start(10);
+    pButton[idx]->setText(qle->text());
+    currConfigAudioFile->saveConfig();
+    qle->deleteLater();
+    hbl->deleteLater();
 }
 void MainWindow::droppedLoopButOnOtherLoopBut( int orig, int dest)
     {
@@ -94,7 +94,6 @@ void MainWindow::doDelayedSetButtonLoop(){
     currConfigAudioFile->saveConfig();
 }
 void MainWindow::setButtonLoops(){
-
     deleteLayout(ui->layoutLoopAll);
     deleteLayout( ui->gridLayoutLoops);
 
@@ -103,12 +102,15 @@ void MainWindow::setButtonLoops(){
         pButton[i]->setObjectName("Bloop" + QString::number(i));
         pButton[i]->setProperty("myId",i);
         pButton[i]->setText(currConfigAudioFile->audioFile.loopsAudioList.at(i).loopName);
+        pButton[i]->setCheckable(true);
+        pButton[i]->setAutoExclusive(true);
         if( i == 0){
             ui->layoutLoopAll->addWidget(pButton[i]);
         }
         else{
             ui->gridLayoutLoops->addWidget(pButton[i],(i-1)/4,(i-1)%4);
         }
+        pButton[i]->setChecked(currConfigAudioFile->audioFile.loopsAudioList.at(i).currSelected);
         connect(pButton[i],SIGNAL(clicked()), this,SLOT(pushButtonLoop()));
         connect(pButton[i], SIGNAL(changePosButtonLoop(int,int)),this,SLOT(droppedLoopButOnOtherLoopBut(int,int)));
         connect(pButton[i], SIGNAL(doubleClick(int)), this,SLOT(doubleClickLoopBut(int)) );
@@ -212,7 +214,6 @@ void MainWindow::on_valueTempo_editingFinished()
 void MainWindow::on_sliderPitch_valueChanged(int value)
 {
     ui->valueSemiTone->setText(QString::number(value));
-    qDebug() << ui->sliderPitch->value() << " et " << value;
     pFileObj->setPitchSemiTones(value);
 }
 

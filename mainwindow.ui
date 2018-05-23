@@ -105,9 +105,6 @@
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_7"/>
-               </item>
-               <item>
                 <layout class="QGridLayout" name="gridLayoutLoops">
                  <property name="topMargin">
                   <number>0</number>
@@ -126,7 +123,7 @@
                   </widget>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QPushButton" name="pushButton_7">
+                  <widget class="QPushButtonLoop" name="pushButton_7">
                    <property name="text">
                     <string>PushButton</string>
                    </property>
@@ -210,6 +207,9 @@
                  <string>Nouvelle Boucle</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_2"/>
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_10">
@@ -545,6 +545,11 @@
    <class>QRecentsFilesTree</class>
    <extends>QTreeWidget</extends>
    <header>QRecentsFilesTree.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QPushButtonLoop</class>
+   <extends>QPushButton</extends>
+   <header>QPushButtonLoop.h</header>
   </customwidget>
  </customwidgets>
  <resources>

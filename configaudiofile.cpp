@@ -98,6 +98,7 @@ retryDom:
 
         domLoop = domLoop.nextSiblingElement("loop");
     }
+    setSelected(0);
 
 }
 void configAudioFile::saveDom()
@@ -189,10 +190,12 @@ bool configAudioFile::createDefaultConfigFile( QString configFileName )
     return true;
 
 }
-/*
-void configAudioFile::getTempo(QString loopName ){
-    for(int i = 0; i < MAX_LOOPS;i++){
-
+void configAudioFile::setSelected(int idx )
+{
+    for( int i = 0; i < audioFile.loopsAudioList.count();i++){
+        if( idx == i )
+            audioFile.loopsAudioList[i].currSelected = true;
+        else
+            audioFile.loopsAudioList[i].currSelected = false;
     }
 }
-*/

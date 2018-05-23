@@ -2,6 +2,7 @@
 #define LOOPSAUDIO_H
 
 struct loopAudio{
+    bool currSelected;
     QString loopName;
     float beginLoop;
     float endLoop;

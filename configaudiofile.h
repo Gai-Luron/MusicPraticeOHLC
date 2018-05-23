@@ -21,9 +21,11 @@ public:
     void loadConfig(QString fileName);
     void saveConfig();
     configAudio audioFile;
+    void setSelected(int i );
 
 
 private:
+
     void saveDom();
     bool getDomAudioFile( QString fileName, QDomElement* domReturn );
     bool createDefaultConfigFile( QString configFilename );
