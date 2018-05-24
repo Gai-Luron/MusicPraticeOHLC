@@ -22,6 +22,7 @@ public:
     void saveConfig();
     configAudio audioFile;
     void setSelected(int i );
+    int selected();
 
 
 private:

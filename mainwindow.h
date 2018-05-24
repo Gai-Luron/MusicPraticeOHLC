@@ -22,6 +22,8 @@ public:
     ~MainWindow();
 
 private slots:
+    void triggerloopContextMenu(loopContextMenu,int);
+
     void editedNameLoop( );
 
     void filesDropped(QStringList* fileList);
@@ -64,10 +66,11 @@ private slots:
 
     void on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
+    void on_newLoop_clicked();
 
-    void on_pushButton_10_clicked();
+    void on_deleteLoop_clicked();
 
-    void on_pushButton_9_clicked();
+    void on_insertLoop_clicked();
 
 private:
     QPushButtonLoop *pButton[100];

@@ -199,3 +199,11 @@ void configAudioFile::setSelected(int idx )
             audioFile.loopsAudioList[i].currSelected = false;
     }
 }
+int configAudioFile::selected()
+{
+    for( int i = 0; i < audioFile.loopsAudioList.count();i++){
+        if( audioFile.loopsAudioList[i].currSelected == true )
+            return i;
+    }
+    return -1;
+}

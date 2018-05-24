@@ -7,6 +7,8 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QMenu>
+#include <QMessageBox>
 
 
 processFile *pFileObj;
@@ -44,6 +46,55 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+}
+void MainWindow::triggerloopContextMenu(loopContextMenu lc,int idx)
+{
+    QString action;
+    loopAudio tmpLoopAudio;
+    switch( lc )
+    {
+        case loopContextMenu::ajouter:
+            action = "Ajouter";
+            tmpLoopAudio.loopName = tr("Nouveau");
+            tmpLoopAudio.beginLoop = 0;
+            tmpLoopAudio.endLoop = 100;
+            tmpLoopAudio.tempo = 100;
+            tmpLoopAudio.semiTones = 0;
+            currConfigAudioFile->audioFile.loopsAudioList.append(tmpLoopAudio);
+            currConfigAudioFile->setSelected( currConfigAudioFile->audioFile.loopsAudioList.count()-1);
+            delayedSetButtonLoop->start(10);
+            break;
+        case loopContextMenu::inserer:
+            if(idx > 0){
+                action = "Insérer";
+                tmpLoopAudio.loopName = tr("Nouveau");
+                tmpLoopAudio.beginLoop = 0;
+                tmpLoopAudio.endLoop = 100;
+                tmpLoopAudio.tempo = 100;
+                tmpLoopAudio.semiTones = 0;
+                currConfigAudioFile->audioFile.loopsAudioList.insert(idx,tmpLoopAudio);
+                currConfigAudioFile->setSelected( idx );
+                delayedSetButtonLoop->start(10);
+            }
+            else if (idx == 0){
+                QMessageBox msgBox;
+                msgBox.setText(tr("Impossible d'insérer devant la boucle principale"));
+                msgBox.exec();
+            }
+            break;
+        case loopContextMenu::supprimer:
+            if( idx > 0 ){
+                currConfigAudioFile->audioFile.loopsAudioList.removeAt(idx);
+                currConfigAudioFile->setSelected(idx-1);
+                delayedSetButtonLoop->start(10);
+            }
+            else if(idx == 0){
+                QMessageBox msgBox;
+                msgBox.setText(tr("Impossible de supprimer la boucle principale"));
+                msgBox.exec();
+            }
+            break;
+    }
 }
 
 void MainWindow::filesDropped(QStringList* fileList ){
@@ -97,6 +148,7 @@ void MainWindow::setButtonLoops(){
     deleteLayout(ui->layoutLoopAll);
     deleteLayout( ui->gridLayoutLoops);
 
+
     for( int i = 0; i < currConfigAudioFile->audioFile.loopsAudioList.count();i++){
         pButton[i] = new QPushButtonLoop(this);
         pButton[i]->setObjectName("Bloop" + QString::number(i));
@@ -111,6 +163,7 @@ void MainWindow::setButtonLoops(){
             ui->gridLayoutLoops->addWidget(pButton[i],(i-1)/4,(i-1)%4);
         }
         pButton[i]->setChecked(currConfigAudioFile->audioFile.loopsAudioList.at(i).currSelected);
+        connect(pButton[i], SIGNAL(contextMenuAction(loopContextMenu,int)),this,SLOT(triggerloopContextMenu(loopContextMenu,int)));
         connect(pButton[i],SIGNAL(clicked()), this,SLOT(pushButtonLoop()));
         connect(pButton[i], SIGNAL(changePosButtonLoop(int,int)),this,SLOT(droppedLoopButOnOtherLoopBut(int,int)));
         connect(pButton[i], SIGNAL(doubleClick(int)), this,SLOT(doubleClickLoopBut(int)) );
@@ -129,6 +182,7 @@ void MainWindow::pushButtonLoop(){
     QVariant myId = sender()->property("myId");
      if (myId.isValid()) {
        int idx = myId.toInt();
+       currConfigAudioFile->setSelected(idx);
      }
 
 }
@@ -303,11 +357,17 @@ void MainWindow::on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *curren
 
 }
 
-void MainWindow::on_pushButton_10_clicked()
+void MainWindow::on_newLoop_clicked()
 {
-
+    triggerloopContextMenu(loopContextMenu::ajouter,0);
 }
 
-void MainWindow::on_pushButton_9_clicked()
+void MainWindow::on_deleteLoop_clicked()
 {
+    triggerloopContextMenu(loopContextMenu::supprimer,currConfigAudioFile->selected());
+}
+
+void MainWindow::on_insertLoop_clicked()
+{
+    triggerloopContextMenu(loopContextMenu::inserer,currConfigAudioFile->selected());
 }

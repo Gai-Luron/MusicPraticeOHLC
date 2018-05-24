@@ -202,17 +202,21 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QPushButton" name="pushButton_9">
+               <widget class="QPushButton" name="newLoop">
                 <property name="text">
                  <string>Nouvelle Boucle</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_2"/>
+               <widget class="QPushButton" name="insertLoop">
+                <property name="text">
+                 <string>Insérer Boucle</string>
+                </property>
+               </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_10">
+               <widget class="QPushButton" name="deleteLoop">
                 <property name="acceptDrops">
                  <bool>true</bool>
                 </property>

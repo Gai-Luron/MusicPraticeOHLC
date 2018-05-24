@@ -7,6 +7,11 @@
 #include <QPushButton>
 
 
+enum class loopContextMenu{
+    ajouter,
+    inserer,
+    supprimer
+};
 class QPushButtonLoop : public QPushButton
 {
     Q_OBJECT
@@ -23,9 +28,17 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent* event);
 
 
+
 signals:
     void changePosButtonLoop(int origMyId, int destMyId ) ;
     void doubleClick(int myId);
+    void contextMenuAction(loopContextMenu val, int myId);
+
+private slots:
+    void ShowContextMenu(const QPoint &pos);
+    void addShowContextMenu();
+    void insertShowContextMenu();
+    void deleteShowContextMenu();
 
 };
 
