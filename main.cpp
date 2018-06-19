@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include "processfile.h"
+#include "frontSoundTouch.h"
 #include <QDebug>
 #include "SoundTouch.h"
 

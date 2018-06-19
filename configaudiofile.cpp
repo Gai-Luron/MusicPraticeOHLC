@@ -20,10 +20,14 @@ configAudioFile::configAudioFile()
 
 
 }
+configAudioFile::~configAudioFile()
+{
+    delete dom;
+}
 void configAudioFile::saveConfig()
 {
     QDomElement domAudioFile;
-    getDomAudioFile(audioFile.fileName,&domAudioFile );
+    getDomAudioFile(fileName,&domAudioFile );
     QDomElement XML_loops = domAudioFile.firstChildElement("loops");
     XML_loops.parentNode().removeChild(XML_loops);
     XML_loops = dom->createElement("loops");
@@ -31,13 +35,13 @@ void configAudioFile::saveConfig()
 
 
 
-    for( int i = 0; i < audioFile.loopsAudioList.count();i++){
-        createLoopXML(audioFile.fileName,
-                      audioFile.loopsAudioList.at(i).loopName,
-                      audioFile.loopsAudioList.at(i).beginLoop,
-                      audioFile.loopsAudioList.at(i).endLoop,
-                      audioFile.loopsAudioList.at(i).tempo,
-                      audioFile.loopsAudioList.at(i).semiTones
+    for( int i = 0; i < loopsAudioList.count();i++){
+        createLoopXML(fileName,
+                      loopsAudioList.at(i).loopName,
+                      loopsAudioList.at(i).beginLoop,
+                      loopsAudioList.at(i).endLoop,
+                      loopsAudioList.at(i).tempo,
+                      loopsAudioList.at(i).semiTones
         );
     }
 
@@ -48,17 +52,17 @@ void configAudioFile::saveConfig()
 
 void configAudioFile::loadConfig(QString fileName){
 
-    audioFile.fileName = fileName;
+    this->fileName = fileName;
     QFileInfo QF;
     QF.setFile(fileName);
-    audioFile.configFileName = pathData + "/" + QF.completeBaseName() + ".xml";
+    configFileName = pathData + "/" + QF.completeBaseName() + ".xml";
 
-    QFile xml_doc(audioFile.configFileName);
+    QFile xml_doc(configFileName);
 retry:
     if(!xml_doc.open(QIODevice::ReadWrite))// Si l'on n'arrive pas à ouvrir le fichier XML.
     {
          QMessageBox::warning(this,tr("Erreur à l'ouverture du document XML")
-                ,tr("Le document XML ") + audioFile.configFileName + tr(" n'a pas pu être ouvert ou créé.")
+                ,tr("Le document XML ") + configFileName + tr(" n'a pas pu être ouvert ou créé.")
          );
          return;
     }
@@ -66,7 +70,7 @@ retry:
     {
 
         xml_doc.close();
-        if( createDefaultConfigFile(audioFile.configFileName) )
+        if( createDefaultConfigFile(configFileName) )
             goto retry;
          QMessageBox::warning(this,"Erreur à l'ouverture du document XML","Le document XML n'a pas pu être attribué à l'objet QDomDocument.");
          return;
@@ -86,7 +90,7 @@ retryDom:
     QDomElement name = domAudioFile.firstChildElement("fileName");
     QDomElement domLoop = domAudioFile.firstChildElement("loops");
     domLoop = domLoop.firstChildElement("loop");
-    audioFile.loopsAudioList.clear();
+    loopsAudioList.clear();
     while(!domLoop.isNull()){
         loopAudio tmpLoopAudio;
         tmpLoopAudio.loopName = domLoop.firstChildElement("name").text();
@@ -94,16 +98,17 @@ retryDom:
         tmpLoopAudio.endLoop = domLoop.firstChildElement("endLoop").text().toFloat();
         tmpLoopAudio.tempo = domLoop.firstChildElement("tempo").text().toFloat();
         tmpLoopAudio.semiTones = domLoop.firstChildElement("semiTones").text().toInt();
-        audioFile.loopsAudioList.append(tmpLoopAudio);
+        loopsAudioList.append(tmpLoopAudio);
 
         domLoop = domLoop.nextSiblingElement("loop");
     }
     setSelected(0);
 
 }
+
 void configAudioFile::saveDom()
 {
-    QFile data(audioFile.configFileName);
+    QFile data(configFileName);
     if( data.open(QFile::WriteOnly | QFile::Truncate))
     {
         QTextStream out(&data);
@@ -192,17 +197,17 @@ bool configAudioFile::createDefaultConfigFile( QString configFileName )
 }
 void configAudioFile::setSelected(int idx )
 {
-    for( int i = 0; i < audioFile.loopsAudioList.count();i++){
+    for( int i = 0; i < loopsAudioList.count();i++){
         if( idx == i )
-            audioFile.loopsAudioList[i].currSelected = true;
+            loopsAudioList[i].currSelected = true;
         else
-            audioFile.loopsAudioList[i].currSelected = false;
+            loopsAudioList[i].currSelected = false;
     }
 }
 int configAudioFile::selected()
 {
-    for( int i = 0; i < audioFile.loopsAudioList.count();i++){
-        if( audioFile.loopsAudioList[i].currSelected == true )
+    for( int i = 0; i < loopsAudioList.count();i++){
+        if( loopsAudioList[i].currSelected == true )
             return i;
     }
     return -1;

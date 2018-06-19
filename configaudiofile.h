@@ -9,20 +9,30 @@
 #include <QFile>
 #include <QtGui>
 #include <QWidget>
-#include "loopsaudio.h"
 
 
 
 class configAudioFile : public QWidget
 {
-
 public:
+    struct loopAudio{
+        bool currSelected;
+        QString loopName;
+        float beginLoop;
+        float endLoop;
+        int tempo;
+        int semiTones;
+    };
     configAudioFile();
+    ~configAudioFile();
     void loadConfig(QString fileName);
     void saveConfig();
-    configAudio audioFile;
     void setSelected(int i );
     int selected();
+
+    QString fileName;
+    QString configFileName;
+    QList<loopAudio> loopsAudioList;
 
 
 private:

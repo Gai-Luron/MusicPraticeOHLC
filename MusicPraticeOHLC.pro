@@ -32,20 +32,21 @@ LIBS += $$_PRO_FILE_PWD_/lib/libSoundTouch.a
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        processfile.cpp \
         recentfiles.cpp \
     configaudiofile.cpp \
     QRecentsFilesTree.cpp \
-    QPushButtonLoop.cpp
+    QPushButtonLoop.cpp \
+    frontSoundTouch.cpp \
+    processfile.cpp
 
 HEADERS += \
         mainwindow.h \
-        processfile.h \
         recentfiles.h \
     configaudiofile.h \
-    loopsaudio.h \
     QRecentsFilesTree.h \
-    QPushButtonLoop.h
+    QPushButtonLoop.h \
+    frontSoundTouch.h \
+    processfile.h
 
 FORMS += \
         mainwindow.ui

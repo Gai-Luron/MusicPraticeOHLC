@@ -49,6 +49,7 @@ void QPushButtonLoop::mousePressEvent(QMouseEvent *event)
 
     if (event->button() == Qt::RightButton ){
         ShowContextMenu(event->pos());
+        return;
     }
     if (event->button() == Qt::LeftButton )
        // && iconLabel->geometry().contains(event->pos()))
@@ -120,7 +121,29 @@ void QPushButtonLoop::dropEvent(QDropEvent *event){
     }
 }
 void QPushButtonLoop::mouseDoubleClickEvent(QMouseEvent* event){
-    if (event->button() == Qt::LeftButton )
-        emit doubleClick(this->property(("myId")).toInt());
+    if (event->button() == Qt::LeftButton ){
 
+
+        qle = new QLineEdit(this->text(), this);
+        qle->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        qle->setAlignment(Qt::AlignHCenter);
+
+        hbl = new QVBoxLayout();
+        hbl->setContentsMargins(8,4,8,4);
+        this->setLayout(hbl);
+        hbl->addWidget(qle);
+        qle->setFocus();
+        qle->connect(qle,SIGNAL(editingFinished()),this, SLOT(editedNameLoop()));
+
+    }
+
+}
+
+void QPushButtonLoop::editedNameLoop( )
+{
+    this->setText(qle->text());
+    emit editedNameLoop(this->property(("myId")).toInt(),this->text());
+
+    qle->deleteLater();
+    hbl->deleteLater();
 }

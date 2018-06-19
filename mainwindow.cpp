@@ -12,8 +12,8 @@
 
 
 processFile *pFileObj;
-configAudioFile *currConfigAudioFile;
-recentFiles *rFiles;
+//configAudioFile *currConfigAudioFile;
+recentFiles *rFiles(0);
 
 bool flagUpdateSliderTimePlayed = true;
 
@@ -27,10 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->currentFileRead->setText(tr("Pas de fichier"));
     ui->currentPathRead->setText("");
 
-    currConfigAudioFile = new configAudioFile();
 
     pFileObj =new processFile();
-    pFileObj->bypassStrech = false;
+    pFileObj->setByPassStrech(false);
 
     connect(pFileObj, SIGNAL(processed(float)),this, SLOT(setCurrentTimePlayed(float)));
 
@@ -47,10 +46,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 }
+MainWindow::~MainWindow()
+{
+    delete ui;
+    delete delayedSetButtonLoop;
+    delete pFileObj;
+}
+
 void MainWindow::triggerloopContextMenu(loopContextMenu lc,int idx)
 {
     QString action;
-    loopAudio tmpLoopAudio;
+    configAudioFile::loopAudio tmpLoopAudio;
     switch( lc )
     {
         case loopContextMenu::ajouter:
@@ -60,8 +66,8 @@ void MainWindow::triggerloopContextMenu(loopContextMenu lc,int idx)
             tmpLoopAudio.endLoop = 100;
             tmpLoopAudio.tempo = 100;
             tmpLoopAudio.semiTones = 0;
-            currConfigAudioFile->audioFile.loopsAudioList.append(tmpLoopAudio);
-            currConfigAudioFile->setSelected( currConfigAudioFile->audioFile.loopsAudioList.count()-1);
+            pFileObj->loopsAudioList->append(tmpLoopAudio);
+            pFileObj->setSelectedLoop(pFileObj->loopsAudioList->count()-1);
             delayedSetButtonLoop->start(10);
             break;
         case loopContextMenu::inserer:
@@ -72,8 +78,8 @@ void MainWindow::triggerloopContextMenu(loopContextMenu lc,int idx)
                 tmpLoopAudio.endLoop = 100;
                 tmpLoopAudio.tempo = 100;
                 tmpLoopAudio.semiTones = 0;
-                currConfigAudioFile->audioFile.loopsAudioList.insert(idx,tmpLoopAudio);
-                currConfigAudioFile->setSelected( idx );
+                pFileObj->loopsAudioList->insert(idx,tmpLoopAudio);
+                pFileObj->setSelectedLoop( idx );
                 delayedSetButtonLoop->start(10);
             }
             else if (idx == 0){
@@ -84,8 +90,8 @@ void MainWindow::triggerloopContextMenu(loopContextMenu lc,int idx)
             break;
         case loopContextMenu::supprimer:
             if( idx > 0 ){
-                currConfigAudioFile->audioFile.loopsAudioList.removeAt(idx);
-                currConfigAudioFile->setSelected(idx-1);
+                pFileObj->loopsAudioList->removeAt(idx);
+                pFileObj->setSelectedLoop(idx-1);
                 delayedSetButtonLoop->start(10);
             }
             else if(idx == 0){
@@ -104,37 +110,18 @@ void MainWindow::filesDropped(QStringList* fileList ){
     startNewaudioFile(fileList->at(0),true);
 }
 
-void MainWindow::doubleClickLoopBut( int i )
-{
-    // Initialize to Fresh Button
-    currConfigAudioFile->setSelected( i );
-    setButtonLoops();
 
-    qle = new QLineEdit(pButton[i]->text(), pButton[i]);
-    qle->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    qle->setAlignment(Qt::AlignHCenter);
-    qle->setProperty("myId",i);
-    hbl = new QVBoxLayout();
-    hbl->setContentsMargins(8,4,8,4);
-    pButton[i]->setLayout(hbl);
-    hbl->addWidget(qle);
-    qle->setFocus();
-    qle->connect(qle,SIGNAL(editingFinished()),this, SLOT(editedNameLoop()));
-
-}
-void MainWindow::editedNameLoop( )
+void MainWindow::editedNameLoop( int i, QString txt )
 {
-    int idx = qle->property("myId").toInt();
-    currConfigAudioFile->audioFile.loopsAudioList[idx].loopName = qle->text();
-    pButton[idx]->setText(qle->text());
-    currConfigAudioFile->saveConfig();
-    qle->deleteLater();
-    hbl->deleteLater();
+    (*pFileObj->loopsAudioList)[i].loopName = txt;
+    pFileObj->saveConfig();
+    pFileObj->setSelectedLoop( i );
 }
+
 void MainWindow::droppedLoopButOnOtherLoopBut( int orig, int dest)
     {
 
-    currConfigAudioFile->audioFile.loopsAudioList.move(orig,dest);
+    pFileObj->loopsAudioList->move(orig,dest);
     delayedSetButtonLoop->start(10);
 
 //    qDebug() << orig << ":" << dest;
@@ -142,31 +129,33 @@ void MainWindow::droppedLoopButOnOtherLoopBut( int orig, int dest)
 void MainWindow::doDelayedSetButtonLoop(){
     delayedSetButtonLoop->stop();
     setButtonLoops();
-    currConfigAudioFile->saveConfig();
+    pFileObj->saveConfig();
 }
 void MainWindow::setButtonLoops(){
+    QPushButtonLoop *but;
+
     deleteLayout(ui->layoutLoopAll);
     deleteLayout( ui->gridLayoutLoops);
 
 
-    for( int i = 0; i < currConfigAudioFile->audioFile.loopsAudioList.count();i++){
-        pButton[i] = new QPushButtonLoop(this);
-        pButton[i]->setObjectName("Bloop" + QString::number(i));
-        pButton[i]->setProperty("myId",i);
-        pButton[i]->setText(currConfigAudioFile->audioFile.loopsAudioList.at(i).loopName);
-        pButton[i]->setCheckable(true);
-        pButton[i]->setAutoExclusive(true);
+    for( int i = 0; i < pFileObj->loopsAudioList->count();i++){
+        but = new QPushButtonLoop(this);
+        but->setObjectName("Bloop" + QString::number(i));
+        but->setProperty("myId",i);
+        but->setText(pFileObj->loopsAudioList->at(i).loopName);
+        but->setCheckable(true);
+        but->setAutoExclusive(true);
         if( i == 0){
-            ui->layoutLoopAll->addWidget(pButton[i]);
+            ui->layoutLoopAll->addWidget(but);
         }
         else{
-            ui->gridLayoutLoops->addWidget(pButton[i],(i-1)/4,(i-1)%4);
+            ui->gridLayoutLoops->addWidget(but,(i-1)/4,(i-1)%4);
         }
-        pButton[i]->setChecked(currConfigAudioFile->audioFile.loopsAudioList.at(i).currSelected);
-        connect(pButton[i], SIGNAL(contextMenuAction(loopContextMenu,int)),this,SLOT(triggerloopContextMenu(loopContextMenu,int)));
-        connect(pButton[i],SIGNAL(clicked()), this,SLOT(pushButtonLoop()));
-        connect(pButton[i], SIGNAL(changePosButtonLoop(int,int)),this,SLOT(droppedLoopButOnOtherLoopBut(int,int)));
-        connect(pButton[i], SIGNAL(doubleClick(int)), this,SLOT(doubleClickLoopBut(int)) );
+        but->setChecked(pFileObj->loopsAudioList->at(i).currSelected);
+        connect(but, SIGNAL(contextMenuAction(loopContextMenu,int)),this,SLOT(triggerloopContextMenu(loopContextMenu,int)));
+        connect(but,SIGNAL(clicked()), this,SLOT(onButtonLoopClicked()));
+        connect(but, SIGNAL(changePosButtonLoop(int,int)),this,SLOT(droppedLoopButOnOtherLoopBut(int,int)));
+        connect(but, SIGNAL(editedNameLoop(int,QString)), this,SLOT(editedNameLoop(int,QString)) );
     }
 }
 void MainWindow::deleteLayout(QLayout *item){
@@ -178,18 +167,20 @@ void MainWindow::deleteLayout(QLayout *item){
         delete child;
     }
 }
-void MainWindow::pushButtonLoop(){
+void MainWindow::onButtonLoopClicked(){
     QVariant myId = sender()->property("myId");
      if (myId.isValid()) {
        int idx = myId.toInt();
-       currConfigAudioFile->setSelected(idx);
+       pFileObj->setSelectedLoop(idx);
+       setPlayConfigFromCurrentLoop();
      }
 
 }
 void MainWindow::updateRecentFilesWidget(){
     QStringList headers;
+    if( rFiles )
+            delete rFiles; // Free Heap of old pointer
     rFiles = new recentFiles();
-
     ui->recentFilesWidget->clear();
     ui->recentFilesWidget->setHeaderLabel("Derniers fichiers Audios");
     ui->recentFilesWidget->setColumnCount(4);
@@ -222,19 +213,15 @@ void MainWindow::setCurrentTimePlayed(float nb)
         ui->currentTimePlayed->setValue(nb*100);
     }
 }
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
 
 
 
 void MainWindow::on_checkByPass_stateChanged(int arg1)
 {
     if( arg1 == Qt::Unchecked)
-        pFileObj->bypassStrech = true;
+        pFileObj->setByPassStrech(true);
     else
-        pFileObj->bypassStrech = false;
+        pFileObj->setByPassStrech(false);
 
 }
 
@@ -267,15 +254,24 @@ void MainWindow::on_valueTempo_editingFinished()
 
 void MainWindow::on_sliderPitch_valueChanged(int value)
 {
+    int currSelected;
+    currSelected = pFileObj->selectedLoop();
+    (*pFileObj->loopsAudioList)[currSelected].semiTones = value;
+    pFileObj->saveConfig();
+
     ui->valueSemiTone->setText(QString::number(value));
     pFileObj->setPitchSemiTones(value);
 }
 
 void MainWindow::on_sliderTempo_valueChanged(int value)
 {
+    int currSelected;
+    currSelected = pFileObj->selectedLoop();
+    (*pFileObj->loopsAudioList)[currSelected].tempo = value;
+    pFileObj->saveConfig();
+
     ui->valueTempo->setText(QString::number(value));
     pFileObj->setTempo(value);
-
 }
 
 
@@ -293,9 +289,11 @@ void MainWindow::on_valueSemiTone_editingFinished()
 void MainWindow::startNewaudioFile( QString fileName, bool launchPlay ){
     rFiles->addFile(fileName);
     updateRecentFilesWidget();
-    pFileObj->openSoundFile(fileName);
-    currConfigAudioFile->loadConfig(fileName);
+    pFileObj->setFilename(fileName);
     setButtonLoops();
+
+    setPlayConfigFromCurrentLoop();
+
     if( launchPlay ){
         pFileObj->play();
         ui->actionPlay->setChecked(true);
@@ -305,6 +303,7 @@ void MainWindow::startNewaudioFile( QString fileName, bool launchPlay ){
 void MainWindow::on_recentFilesWidget_itemActivated(QTreeWidgetItem *item, int column)
 {
     QString fileName;
+    (void)column;
     ui->currentFileRead->setText(item->text(0));
     ui->currentPathRead->setText(item->text(2));
     fileName = item->text(3);
@@ -344,30 +343,39 @@ void MainWindow::on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *curren
 {
     QString fileName;
     static bool flagFirst = true;
-
+    (void)previous;
     if( flagFirst ){
         flagFirst = false;
         ui->currentFileRead->setText(current->text(0));
         ui->currentPathRead->setText(current->text(2));
         fileName = current->text(3);
-        pFileObj->openSoundFile(fileName);
-        currConfigAudioFile->loadConfig(fileName);
+        pFileObj->setFilename(fileName);
         setButtonLoops();
+        setPlayConfigFromCurrentLoop();
+
     }
 
 }
 
-void MainWindow::on_newLoop_clicked()
+void MainWindow::onContextMenuNewLoopClicked()
 {
     triggerloopContextMenu(loopContextMenu::ajouter,0);
 }
 
-void MainWindow::on_deleteLoop_clicked()
+void MainWindow::onContextMenuDeleteLoopClicked()
 {
-    triggerloopContextMenu(loopContextMenu::supprimer,currConfigAudioFile->selected());
+    triggerloopContextMenu(loopContextMenu::supprimer,pFileObj->selectedLoop());
 }
 
-void MainWindow::on_insertLoop_clicked()
+void MainWindow::onContextMenuInsertLoopClicked()
 {
-    triggerloopContextMenu(loopContextMenu::inserer,currConfigAudioFile->selected());
+    triggerloopContextMenu(loopContextMenu::inserer,pFileObj->selectedLoop());
+}
+void MainWindow::setPlayConfigFromCurrentLoop(){
+    int currSelected;
+    currSelected = pFileObj->selectedLoop();
+    ui->sliderTempo->setValue(pFileObj->loopsAudioList->at(currSelected).tempo);
+    ui->sliderPitch->setValue(pFileObj->loopsAudioList->at(currSelected).semiTones);
+    pFileObj->seek((float)50);
+
 }

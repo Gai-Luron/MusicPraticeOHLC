@@ -24,13 +24,11 @@ public:
 private slots:
     void triggerloopContextMenu(loopContextMenu,int);
 
-    void editedNameLoop( );
+    void editedNameLoop( int i, QString txt );
 
     void filesDropped(QStringList* fileList);
 
     void droppedLoopButOnOtherLoopBut( int orig, int dest);
-
-    void doubleClickLoopBut(int);
 
     void doDelayedSetButtonLoop();
 
@@ -38,7 +36,7 @@ private slots:
 
     void setCurrentTimePlayed(float i);
 
-    void pushButtonLoop();
+    void onButtonLoopClicked();
 
     void on_currentTimePlayed_sliderPressed();
 
@@ -66,14 +64,15 @@ private slots:
 
     void on_recentFilesWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
-    void on_newLoop_clicked();
+    void onContextMenuNewLoopClicked();
 
-    void on_deleteLoop_clicked();
+    void onContextMenuDeleteLoopClicked();
 
-    void on_insertLoop_clicked();
+    void onContextMenuInsertLoopClicked();
+
+    void setPlayConfigFromCurrentLoop();
 
 private:
-    QPushButtonLoop *pButton[100];
     Ui::MainWindow *ui;
     void deleteLayout(QLayout *item);
     void setButtonLoops();
@@ -81,8 +80,8 @@ private:
     QTimer *endEditButtonLoop;
     int origButton = -1;
     int destButton = -1;
-    QLineEdit *qle;
-    QVBoxLayout *hbl;
+//    QLineEdit *qle;
+//    QVBoxLayout *hbl;
 
 };
 

@@ -5,6 +5,7 @@
 #include <QWidget>
 #include<QTreeWidget>
 #include <QPushButton>
+#include <QVBoxLayout>
 
 
 enum class loopContextMenu{
@@ -18,6 +19,9 @@ class QPushButtonLoop : public QPushButton
 public:
     QPushButtonLoop(QWidget *parent = 0);
     int myId;
+private:
+    QLineEdit *qle;
+    QVBoxLayout *hbl;
 
 
 protected:
@@ -31,7 +35,8 @@ protected:
 
 signals:
     void changePosButtonLoop(int origMyId, int destMyId ) ;
-    void doubleClick(int myId);
+//    void doubleClick(int myId);
+    void editedNameLoop(int,QString);
     void contextMenuAction(loopContextMenu val, int myId);
 
 private slots:
@@ -39,6 +44,7 @@ private slots:
     void addShowContextMenu();
     void insertShowContextMenu();
     void deleteShowContextMenu();
+    void editedNameLoop( );
 
 };
 
