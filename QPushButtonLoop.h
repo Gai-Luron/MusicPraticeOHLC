@@ -35,7 +35,6 @@ protected:
 
 signals:
     void changePosButtonLoop(int origMyId, int destMyId ) ;
-//    void doubleClick(int myId);
     void editedNameLoop(int,QString);
     void contextMenuAction(loopContextMenu val, int myId);
 

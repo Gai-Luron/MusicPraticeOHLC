@@ -52,7 +52,6 @@ void QPushButtonLoop::mousePressEvent(QMouseEvent *event)
         return;
     }
     if (event->button() == Qt::LeftButton )
-       // && iconLabel->geometry().contains(event->pos()))
     {
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
@@ -66,7 +65,6 @@ void QPushButtonLoop::mousePressEvent(QMouseEvent *event)
     }
     this->setChecked(true);
     emit clicked();
-//    QPushButton::mousePressEvent(event);
 
 }
 void QPushButtonLoop::dragEnterEvent(QDragEnterEvent *event){

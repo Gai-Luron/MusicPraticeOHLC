@@ -12,7 +12,6 @@
 
 
 processFile *pFileObj;
-//configAudioFile *currConfigAudioFile;
 recentFiles *rFiles(0);
 
 bool flagUpdateSliderTimePlayed = true;
@@ -124,7 +123,6 @@ void MainWindow::droppedLoopButOnOtherLoopBut( int orig, int dest)
     pFileObj->loopsAudioList->move(orig,dest);
     delayedSetButtonLoop->start(10);
 
-//    qDebug() << orig << ":" << dest;
 }
 void MainWindow::doDelayedSetButtonLoop(){
     delayedSetButtonLoop->stop();
