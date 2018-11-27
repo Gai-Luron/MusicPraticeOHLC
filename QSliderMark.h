@@ -15,8 +15,8 @@ class QSliderMark : public QSlider
 public:
     explicit QSliderMark(QWidget *parent = nullptr);
     void addMark(QString markName, int pos, Qt::GlobalColor color   );
-//    void removeMark(QString markName );
-//    void clearMark( );
+    void removeMark(QString markName );
+    void clearAllMark( );
 
 private:
     struct markStruct {
@@ -26,6 +26,7 @@ private:
     };
 
     QList<markStruct>markList;
+    int findMark( QString markName );
 
 
 protected:

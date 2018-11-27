@@ -266,6 +266,7 @@ void frontSoundTouch::seek(long long frameToStart)
 {
     PaError err;
 
+
     if( !isfileOpen ){
         emit( processed((float)0));
         qDebug() << "No file is Opened";
@@ -275,7 +276,9 @@ void frontSoundTouch::seek(long long frameToStart)
 
     err = Pa_IsStreamStopped(stream);
     if( err == 0){
-        err = Pa_StopStream( stream );
+//        err = Pa_StopStream( stream );
+        fillBufferTimer->stop();
+        err = Pa_AbortStream( stream );
         if( err != paNoError )
             goto error;
     }
@@ -317,8 +320,9 @@ void frontSoundTouch::seek(float percentOfFile )
         qDebug() << "No file is Opened";
         return;
     }
-    seek((long long)((float)totalFrames * percentOfFile/(float)100));
     emit( processed(percentOfFile));
+    seek((long long)((float)totalFrames * percentOfFile/(float)100));
+//    emit( processed(percentOfFile));
 }
 
 ////////////////////////////////////////////////////////////////////////////

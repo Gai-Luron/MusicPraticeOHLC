@@ -72,6 +72,9 @@ private slots:
 
     void setPlayConfigFromCurrentLoop();
 
+protected:
+     void keyPressEvent(QKeyEvent *event);
+
 private:
     Ui::MainWindow *ui;
     void deleteLayout(QLayout *item);

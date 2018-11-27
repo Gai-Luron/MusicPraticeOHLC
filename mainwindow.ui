@@ -235,59 +235,6 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="0" colspan="2">
-     <layout class="QVBoxLayout" name="verticalLayout_13">
-      <property name="topMargin">
-       <number>9</number>
-      </property>
-      <item alignment="Qt::AlignLeft">
-       <widget class="QLabel" name="currentFileRead">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="currentPathRead">
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSlider" name="currentTimePlayed">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximum">
-         <number>10000</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="tickPosition">
-         <enum>QSlider::TicksBothSides</enum>
-        </property>
-        <property name="tickInterval">
-         <number>1000</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
     <item row="0" column="1">
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="leftMargin">
@@ -479,6 +426,65 @@
       </item>
      </layout>
     </item>
+    <item row="3" column="0" colspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout_13">
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <item alignment="Qt::AlignLeft">
+       <widget class="QLabel" name="currentFileRead">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="currentPathRead">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSliderMark" name="currentTimePlayed">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>786</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBothSides</enum>
+        </property>
+        <property name="tickInterval">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -545,6 +551,11 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QSliderMark</class>
+   <extends>QSlider</extends>
+   <header>QSliderMark.h</header>
+  </customwidget>
   <customwidget>
    <class>QRecentsFilesTree</class>
    <extends>QTreeWidget</extends>

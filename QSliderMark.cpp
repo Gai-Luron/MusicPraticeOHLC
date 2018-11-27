@@ -28,6 +28,7 @@ void QSliderMark::drawMark( int pos, Qt::GlobalColor color   ){
     else
         taille = width();
 
+
     int position = QStyle::sliderPositionFromValue(minimum(),
                                                   maximum(),
                                                   pos,
@@ -59,11 +60,43 @@ void QSliderMark::drawMark( int pos, Qt::GlobalColor color   ){
         painter.drawPolygon(points, 3);
     }
 }
-void QSliderMark::addMark(QString markName, int pos, Qt::GlobalColor color   ){
-    markStruct ma;
-    ma.markName = markName;
-    ma.pos = pos;
-    ma.color= color ;
-    markList.append( ma );
+int QSliderMark::findMark( QString markName ){
 
+    for( int i = 0; i < markList.count(); i++ ){
+        if ( markList.at(i).markName == markName ){
+            return i;
+        }
+    }
+    return -1;
+}
+void QSliderMark::clearAllMark(){
+    markList.clear();
+    this->update();
+}
+
+void QSliderMark::removeMark(QString markName ){
+    int posMark = findMark( markName );
+    if( posMark != -1 ){
+        markList.removeAt(posMark);
+        this->update();
+    }
+}
+
+void QSliderMark::addMark(QString markName, int pos, Qt::GlobalColor color   ){
+
+    int posMark = findMark( markName );
+
+    if(  posMark != -1 ){
+        markList[posMark].markName = markName;
+        markList[posMark].pos = pos;
+        markList[posMark].color = color;
+        return;
+    }
+    else{
+        markStruct ma;
+        ma.markName = markName;
+        ma.pos = pos;
+        ma.color= color ;
+        markList.append( ma );
+    }
 }

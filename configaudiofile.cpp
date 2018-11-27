@@ -58,6 +58,8 @@ void configAudioFile::loadConfig(QString fileName){
     configFileName = pathData + "/" + QF.completeBaseName() + ".xml";
 
     QFile xml_doc(configFileName);
+//    qDebug() << configFileName;
+
 retry:
     if(!xml_doc.open(QIODevice::ReadWrite))// Si l'on n'arrive pas à ouvrir le fichier XML.
     {

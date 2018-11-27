@@ -37,7 +37,8 @@ SOURCES += \
     QRecentsFilesTree.cpp \
     QPushButtonLoop.cpp \
     frontSoundTouch.cpp \
-    processfile.cpp
+    processfile.cpp \
+    QSliderMark.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,7 +47,10 @@ HEADERS += \
     QRecentsFilesTree.h \
     QPushButtonLoop.h \
     frontSoundTouch.h \
-    processfile.h
+    processfile.h \
+    QSliderloop.h \
+    QSliderloop.h \
+    QSliderMark.h
 
 FORMS += \
         mainwindow.ui
