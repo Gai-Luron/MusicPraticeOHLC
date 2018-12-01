@@ -313,16 +313,16 @@ error:
 /// \brief processFile::seek
 /// \param percentOfFile
 ////////////////////////////////////////////////////////////////////////////
-void frontSoundTouch::seek(float percentOfFile )
+void frontSoundTouch::seek(double percentOfFile )
 {
     if( !isfileOpen ){
-        emit( processed((float)0));
+        emit( processed( double(0)));
         qDebug() << "No file is Opened";
         return;
     }
-    emit( processed(percentOfFile));
+    emit( processed(double(percentOfFile)));
     seek((long long)((float)totalFrames * percentOfFile/(float)100));
-//    emit( processed(percentOfFile));
+//    emit( processed(double(percentOfFile)));
 }
 
 ////////////////////////////////////////////////////////////////////////////

@@ -456,7 +456,23 @@
        </widget>
       </item>
       <item>
-       <widget class="QSliderMark" name="currentTimePlayed">
+       <widget class="QFrameMark" name="frameMark">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>10</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="currentTimePlayed">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -552,11 +568,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QSliderMark</class>
-   <extends>QSlider</extends>
-   <header>QSliderMark.h</header>
-  </customwidget>
-  <customwidget>
    <class>QRecentsFilesTree</class>
    <extends>QTreeWidget</extends>
    <header>QRecentsFilesTree.h</header>
@@ -565,6 +576,12 @@
    <class>QPushButtonLoop</class>
    <extends>QPushButton</extends>
    <header>QPushButtonLoop.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QFrameMark</class>
+   <extends>QFrame</extends>
+   <header>QFrameMark.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

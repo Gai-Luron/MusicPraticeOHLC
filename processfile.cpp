@@ -3,7 +3,7 @@
 processFile::processFile()
 {
     soundTouch = new frontSoundTouch();
-    soundTouch->connect(soundTouch, SIGNAL(processed(float)),this, SLOT(receiveProcessed(float)));
+    soundTouch->connect(soundTouch, SIGNAL(processed(double)),this, SLOT(receiveProcessed(double)));
     caf = new configAudioFile();
 }
 processFile::~processFile()
@@ -24,7 +24,7 @@ bool processFile::play(){
 void processFile::seek(long long frameToStart){
     soundTouch->seek(frameToStart);
 }
-void processFile::seek(float percentOfFile ){
+void processFile::seek(double percentOfFile ){
     soundTouch->seek(percentOfFile);
 }
 void processFile::pause(){
@@ -58,7 +58,7 @@ bool processFile::getByPassStrech(){
     return soundTouch->bypassStrech;
 }
 
-void processFile::receiveProcessed(float perc){
+void processFile::receiveProcessed(double perc){
    emit( processed(perc));
 }
 void processFile::setSelectedLoop(int i ){

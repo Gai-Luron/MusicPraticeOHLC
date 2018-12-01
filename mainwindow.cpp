@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "processfile.h"
 #include "configaudiofile.h"
-#include "recentfiles.h"
 #include <QDebug>
 #include <QFileInfo>
 #include <QFileDialog>
@@ -11,10 +9,10 @@
 #include <QMessageBox>
 
 
-processFile *pFileObj;
-recentFiles *rFiles(0);
 
-bool flagUpdateSliderTimePlayed = true;
+
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->currentPathRead->setText("");
     pFileObj =new processFile();
     pFileObj->setByPassStrech(false);
-    connect(pFileObj, SIGNAL(processed(float)),this, SLOT(setCurrentTimePlayed(float)));
+    connect(pFileObj, SIGNAL(processed(double)),this, SLOT(setCurrentTimePlayed(double)));
 
     ui->valueTempo->setText(QString::number(ui->sliderTempo->value()));
     ui->valueSemiTone->setText(QString::number(ui->sliderPitch->value()));
@@ -38,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent) :
     updateRecentFilesWidget();
     delayedSetButtonLoop = new QTimer( this );
     delayedSetButtonLoop->connect(delayedSetButtonLoop, SIGNAL(timeout()),this, SLOT(doDelayedSetButtonLoop()));
+    connect( ui->frameMark, SIGNAL(percChanged(double,QString)), this, SLOT(slotPercChanged(double,QString)) );
+
+
 }
 MainWindow::~MainWindow()
 {
@@ -45,22 +46,45 @@ MainWindow::~MainWindow()
     delete delayedSetButtonLoop;
     delete pFileObj;
 }
-
 void MainWindow::keyPressEvent(QKeyEvent *event)
  {
-     if(event->key() == Qt::Key_Space)
-        {
-            qDebug() << "Space";
-            if ( ui->actionPlay->isChecked() ){
-                ui->actionPlay->setChecked(false);
-            }
-            else{
-                 ui->actionPlay->setChecked(true);
-            }
-            this->on_actionPlay_triggered();
+    if(event->key() == Qt::Key_Space){
+         qDebug() << "IsChecked : " << ui->actionPlay->isChecked();
+        if ( ui->actionPlay->isChecked() ){
+            ui->actionPlay->setChecked(false);
         }
+        else{
+             ui->actionPlay->setChecked(true);
+        }
+        this->on_actionPlay_triggered();
+    }
  }
+void MainWindow::slotPercChanged(double newPerc, QString markName){
+    int currSelected;
+    currSelected = pFileObj->selectedLoop();
 
+    if( currSelected != 0 ){ // Not The All Loop
+        if( markName == "Begin"){
+            if( newPerc < (*pFileObj->loopsAudioList)[currSelected].endLoop)
+                 (*pFileObj->loopsAudioList)[currSelected].beginLoop = newPerc;
+            else
+                ui->frameMark->updatePosMark("Begin",(*pFileObj->loopsAudioList)[currSelected].beginLoop);
+        }
+        if( markName == "End"){
+            if( newPerc > (*pFileObj->loopsAudioList)[currSelected].beginLoop)
+                (*pFileObj->loopsAudioList)[currSelected].endLoop = newPerc;
+            else
+                ui->frameMark->updatePosMark("End",(*pFileObj->loopsAudioList)[currSelected].endLoop);
+
+        }
+        pFileObj->saveConfig();
+    }
+    else{
+        ui->frameMark->updatePosMark("Begin",(*pFileObj->loopsAudioList)[currSelected].beginLoop);
+        ui->frameMark->updatePosMark("End",(*pFileObj->loopsAudioList)[currSelected].endLoop);
+    }
+
+}
 void MainWindow::triggerloopContextMenu(loopContextMenu lc,int idx)
 {
     QString action;
@@ -168,8 +192,8 @@ void MainWindow::setButtonLoops(){
 void MainWindow::deleteLayout(QLayout *item){
     while (item->count() > 0) {
         QLayoutItem *child = item->takeAt(0);
-        if (child == 00) continue;
-        if (child->layout() != 0) deleteLayout(child->layout());
+        if (child == nullptr) continue;
+        if (child->layout() != nullptr) deleteLayout(child->layout());
         if (child->widget()) delete child->widget();
         delete child;
     }
@@ -214,17 +238,19 @@ void MainWindow::updateRecentFilesWidget(){
             ui->recentFilesWidget->setCurrentItem(itemTree);
     }
 }
-void MainWindow::setCurrentTimePlayed(float nb)
+void MainWindow::setCurrentTimePlayed(double nb)
 {
     int currSelected;
     currSelected = pFileObj->selectedLoop();
 
     if( flagUpdateSliderTimePlayed ){
-        if( nb >= pFileObj->loopsAudioList->at(currSelected).endLoop ){
-            nb = (float)pFileObj->loopsAudioList->at(currSelected).beginLoop;
-            pFileObj->seek(nb);
+        if( nb >= pFileObj->loopsAudioList->at(currSelected).endLoop
+                && nb <= pFileObj->loopsAudioList->at(currSelected).endLoop + 0.2
+         ){
+            nb = pFileObj->loopsAudioList->at(currSelected).beginLoop;
+            pFileObj->seek(double(nb));
         }
-        ui->currentTimePlayed->setValue(nb*100);
+        ui->currentTimePlayed->setValue(int( nb*100 ));
     }
 }
 
@@ -249,7 +275,7 @@ void MainWindow::on_currentTimePlayed_sliderPressed()
 void MainWindow::on_currentTimePlayed_sliderReleased()
 {
     flagUpdateSliderTimePlayed = true;
-    pFileObj->seek((float)((float)ui->currentTimePlayed->value()/(float)100));
+    pFileObj->seek( ui->currentTimePlayed->value()/100.0);
 
 }
 
@@ -392,9 +418,9 @@ void MainWindow::setPlayConfigFromCurrentLoop(){
     currSelected = pFileObj->selectedLoop();
     ui->sliderTempo->setValue(pFileObj->loopsAudioList->at(currSelected).tempo);
     ui->sliderPitch->setValue(pFileObj->loopsAudioList->at(currSelected).semiTones);
-    //    pFileObj->seek((float)40);
-    pFileObj->seek((float)pFileObj->loopsAudioList->at(currSelected).beginLoop);
-    ui->currentTimePlayed->addMark("Begin",pFileObj->loopsAudioList->at(currSelected).beginLoop*100,Qt::green);
-    ui->currentTimePlayed->addMark("End",pFileObj->loopsAudioList->at(currSelected).endLoop*100,Qt::red);
-
+    //    pFileObj->seek((double)40);
+    pFileObj->seek(pFileObj->loopsAudioList->at(currSelected).beginLoop);
+    ui->frameMark->addMark("Begin",pFileObj->loopsAudioList->at(currSelected).beginLoop,Qt::green);
+    ui->frameMark->addMark("End",pFileObj->loopsAudioList->at(currSelected).endLoop,Qt::red);
+//    qDebug() <<  pFileObj->loopsAudioList->at(currSelected).beginLoop;
 }

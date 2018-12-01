@@ -38,7 +38,7 @@ SOURCES += \
     QPushButtonLoop.cpp \
     frontSoundTouch.cpp \
     processfile.cpp \
-    QSliderMark.cpp
+    QFrameMark.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -48,9 +48,7 @@ HEADERS += \
     QPushButtonLoop.h \
     frontSoundTouch.h \
     processfile.h \
-    QSliderloop.h \
-    QSliderloop.h \
-    QSliderMark.h
+    QFrameMark.h
 
 FORMS += \
         mainwindow.ui

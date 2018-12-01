@@ -83,8 +83,8 @@ retryDom:
     if ( getDomAudioFile(fileName,&domAudioFile ) == false){
         createAudioFileXML(fileName);
         createLoopXML(fileName,"All",0,100,100,0);
-        createLoopXML(fileName,"1",0,100,100,0);
-        createLoopXML(fileName,"2",0,100,100,0);
+//        createLoopXML(fileName,"1",0,100,100,0);
+//        createLoopXML(fileName,"2",0,100,100,0);
         saveDom( );
         goto retryDom;
     }
@@ -96,10 +96,15 @@ retryDom:
     while(!domLoop.isNull()){
         loopAudio tmpLoopAudio;
         tmpLoopAudio.loopName = domLoop.firstChildElement("name").text();
-        tmpLoopAudio.beginLoop = domLoop.firstChildElement("beginLoop").text().toFloat();
-        tmpLoopAudio.endLoop = domLoop.firstChildElement("endLoop").text().toFloat();
-        tmpLoopAudio.tempo = domLoop.firstChildElement("tempo").text().toFloat();
+        tmpLoopAudio.beginLoop = domLoop.firstChildElement("beginLoop").text().toDouble();
+        tmpLoopAudio.endLoop = domLoop.firstChildElement("endLoop").text().toDouble();
+        tmpLoopAudio.tempo = domLoop.firstChildElement("tempo").text().toDouble();
         tmpLoopAudio.semiTones = domLoop.firstChildElement("semiTones").text().toInt();
+        if (tmpLoopAudio.beginLoop > tmpLoopAudio.endLoop){
+            tmpLoopAudio.beginLoop = 0;
+            tmpLoopAudio.endLoop = 100;
+        }
+
         loopsAudioList.append(tmpLoopAudio);
 
         domLoop = domLoop.nextSiblingElement("loop");
@@ -152,7 +157,7 @@ void configAudioFile::createAudioFileXML( QString fileName )
 
 }
 
-void configAudioFile::createLoopXML( QString fileName, QString name,float beginLoop, float endLoop, int tempo, int semitone )
+void configAudioFile::createLoopXML( QString fileName, QString name,double beginLoop, double endLoop, int tempo, int semitone )
 {
     QDomElement domAudioFile;
     getDomAudioFile(fileName,&domAudioFile);

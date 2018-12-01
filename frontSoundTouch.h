@@ -58,7 +58,7 @@ public:
     long long setFilename(QString fileName);
     bool play();
     void seek(long long frameToStart);
-    void seek(float percentOfFile );
+    void seek(double percentOfFile );
     void pause();
     void setTempo(int tempo);
     void setPitchSemiTones(int semiTone);
@@ -78,7 +78,7 @@ public slots:
     void insertIntoMemBuffer();
 
 signals:
-    void processed(float num);
+    void processed(double num);
 
 
 };

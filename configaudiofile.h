@@ -18,8 +18,8 @@ public:
     struct loopAudio{
         bool currSelected;
         QString loopName;
-        float beginLoop;
-        float endLoop;
+        double beginLoop;
+        double endLoop;
         int tempo;
         int semiTones;
     };
@@ -41,7 +41,7 @@ private:
     bool getDomAudioFile( QString fileName, QDomElement* domReturn );
     bool createDefaultConfigFile( QString configFilename );
     void getQDomAudioFile( QString fileName );
-    void createLoopXML( QString fileName, QString name,float beginLoop, float endLoop, int tempo, int semitone );
+    void createLoopXML( QString fileName, QString name,double beginLoop, double endLoop, int tempo, int semitone );
     void createAudioFileXML( QString fileName );
 
 

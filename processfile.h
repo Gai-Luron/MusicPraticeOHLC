@@ -22,7 +22,7 @@ public:
     void setFilename(QString fileName);
     bool play();
     void seek(long long frameToStart);
-    void seek(float percentOfFile );
+    void seek(double percentOfFile );
     void pause();
     void setByPassStrech(bool flag);
     bool getByPassStrech();
@@ -42,10 +42,10 @@ public:
 
 
 private slots:
-    void receiveProcessed(float num);
+    void receiveProcessed(double num);
 
 signals:
-    void processed(float num);
+    void processed(double num);
 
 
 };

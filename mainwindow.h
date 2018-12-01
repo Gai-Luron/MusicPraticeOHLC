@@ -8,6 +8,10 @@
 #include <QPushButton>
 #include <QTimer>
 #include "QPushButtonLoop.h"
+#include "processfile.h"
+#include "recentfiles.h"
+
+
 
 namespace Ui {
 class MainWindow;
@@ -18,7 +22,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
@@ -34,7 +38,7 @@ private slots:
 
     void on_checkByPass_stateChanged(int arg1);
 
-    void setCurrentTimePlayed(float i);
+    void setCurrentTimePlayed(double i);
 
     void onButtonLoopClicked();
 
@@ -72,6 +76,9 @@ private slots:
 
     void setPlayConfigFromCurrentLoop();
 
+    void slotPercChanged(double newPerc, QString markName);
+
+
 protected:
      void keyPressEvent(QKeyEvent *event);
 
@@ -83,6 +90,10 @@ private:
     QTimer *endEditButtonLoop;
     int origButton = -1;
     int destButton = -1;
+    processFile *pFileObj;
+    bool flagUpdateSliderTimePlayed = true;
+    recentFiles *rFiles = nullptr;
+
 //    QLineEdit *qle;
 //    QVBoxLayout *hbl;
 
