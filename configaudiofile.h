@@ -11,18 +11,25 @@
 #include <QWidget>
 
 
+class loopAudio{
+
+public:
+    loopAudio();
+    ~loopAudio();
+
+    bool currSelected;
+    QString loopName;
+    double beginLoop;
+    double endLoop;
+    int tempo;
+    int semiTones;
+    int nbLoop;
+};
 
 class configAudioFile : public QWidget
 {
 public:
-    struct loopAudio{
-        bool currSelected;
-        QString loopName;
-        double beginLoop;
-        double endLoop;
-        int tempo;
-        int semiTones;
-    };
+
     configAudioFile();
     ~configAudioFile();
     void loadConfig(QString fileName);
@@ -41,7 +48,8 @@ private:
     bool getDomAudioFile( QString fileName, QDomElement* domReturn );
     bool createDefaultConfigFile( QString configFilename );
     void getQDomAudioFile( QString fileName );
-    void createLoopXML( QString fileName, QString name,double beginLoop, double endLoop, int tempo, int semitone );
+    void createLoopXML( QString fileName, loopAudio loopCfg );
+//    void createLoopXML( QString fileName, QString name,double beginLoop, double endLoop, int tempo, int semitone, int nbLoop );
     void createAudioFileXML( QString fileName );
 
 

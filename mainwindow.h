@@ -78,6 +78,10 @@ private slots:
 
     void slotPercChanged(double newPerc, QString markName);
 
+    void requestPause();
+
+    void loopRemaining(int nbLoop);
+
 
 protected:
      void keyPressEvent(QKeyEvent *event);
@@ -86,6 +90,7 @@ private:
     Ui::MainWindow *ui;
     void deleteLayout(QLayout *item);
     void setButtonLoops();
+    void displayLoopsInfo(int nb, int tot );
     QTimer *delayedSetButtonLoop;
     QTimer *endEditButtonLoop;
     int origButton = -1;

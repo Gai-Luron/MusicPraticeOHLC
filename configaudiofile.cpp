@@ -2,6 +2,21 @@
 #include <QMessageBox>
 #include <QWidget>
 
+loopAudio::loopAudio()
+{
+    loopName = "Nouveau";
+    currSelected = false;
+    beginLoop = 0;
+    endLoop = 100;
+    tempo = 100;
+    semiTones = 0;
+    nbLoop = -1;
+
+
+}
+loopAudio::~loopAudio()
+{
+}
 
 configAudioFile::configAudioFile()
 {
@@ -15,7 +30,6 @@ configAudioFile::configAudioFile()
     if (!dir.exists()) {
         dir.mkpath(".");
     }
-
     dom = new QDomDocument("CONFIG");
 
 
@@ -36,13 +50,8 @@ void configAudioFile::saveConfig()
 
 
     for( int i = 0; i < loopsAudioList.count();i++){
-        createLoopXML(fileName,
-                      loopsAudioList.at(i).loopName,
-                      loopsAudioList.at(i).beginLoop,
-                      loopsAudioList.at(i).endLoop,
-                      loopsAudioList.at(i).tempo,
-                      loopsAudioList.at(i).semiTones
-        );
+
+        createLoopXML(fileName,loopsAudioList.at(i) );
     }
 
 
@@ -82,9 +91,14 @@ retryDom:
     QDomElement domAudioFile;
     if ( getDomAudioFile(fileName,&domAudioFile ) == false){
         createAudioFileXML(fileName);
-        createLoopXML(fileName,"All",0,100,100,0);
-//        createLoopXML(fileName,"1",0,100,100,0);
-//        createLoopXML(fileName,"2",0,100,100,0);
+        loopAudio lA;
+        lA.loopName = "All";
+        lA.beginLoop = 0;
+        lA.endLoop = 100;
+        lA.tempo = 100;
+        lA.semiTones = 0;
+        lA.nbLoop = 1;
+        createLoopXML(fileName,lA);
         saveDom( );
         goto retryDom;
     }
@@ -98,8 +112,9 @@ retryDom:
         tmpLoopAudio.loopName = domLoop.firstChildElement("name").text();
         tmpLoopAudio.beginLoop = domLoop.firstChildElement("beginLoop").text().toDouble();
         tmpLoopAudio.endLoop = domLoop.firstChildElement("endLoop").text().toDouble();
-        tmpLoopAudio.tempo = domLoop.firstChildElement("tempo").text().toDouble();
+        tmpLoopAudio.tempo = domLoop.firstChildElement("tempo").text().toInt();
         tmpLoopAudio.semiTones = domLoop.firstChildElement("semiTones").text().toInt();
+        tmpLoopAudio.nbLoop = domLoop.firstChildElement("nbLoop").text().toInt();
         if (tmpLoopAudio.beginLoop > tmpLoopAudio.endLoop){
             tmpLoopAudio.beginLoop = 0;
             tmpLoopAudio.endLoop = 100;
@@ -157,7 +172,7 @@ void configAudioFile::createAudioFileXML( QString fileName )
 
 }
 
-void configAudioFile::createLoopXML( QString fileName, QString name,double beginLoop, double endLoop, int tempo, int semitone )
+void configAudioFile::createLoopXML( QString fileName, loopAudio lA )
 {
     QDomElement domAudioFile;
     getDomAudioFile(fileName,&domAudioFile);
@@ -171,25 +186,39 @@ void configAudioFile::createLoopXML( QString fileName, QString name,double begin
 
     QDomElement XML_name = dom->createElement("name");
     XML_Loop.appendChild(XML_name);
+
     QDomElement XML_beginLoop = dom->createElement("beginLoop");
     XML_Loop.appendChild(XML_beginLoop);
+
     QDomElement XML_endLoop = dom->createElement("endLoop");
     XML_Loop.appendChild(XML_endLoop);
+
     QDomElement XML_tempo = dom->createElement("tempo");
     XML_Loop.appendChild(XML_tempo);
+
     QDomElement XML_semiTones = dom->createElement("semiTones");
     XML_Loop.appendChild(XML_semiTones);
 
-    QDomText XML_txt = dom->createTextNode(name);
+    QDomElement XML_nbLoop = dom->createElement("nbLoop");
+    XML_Loop.appendChild(XML_nbLoop);
+
+    QDomText XML_txt = dom->createTextNode(lA.loopName);
     XML_name.appendChild(XML_txt);
-    XML_txt = dom->createTextNode(QString::number(beginLoop));
+
+    XML_txt = dom->createTextNode(QString::number(lA.beginLoop));
     XML_beginLoop.appendChild(XML_txt);
-    XML_txt = dom->createTextNode(QString::number(endLoop));
+
+    XML_txt = dom->createTextNode(QString::number(lA.endLoop));
     XML_endLoop.appendChild(XML_txt);
-    XML_txt = dom->createTextNode(QString::number(tempo));
+
+    XML_txt = dom->createTextNode(QString::number(lA.tempo));
     XML_tempo.appendChild(XML_txt);
-    XML_txt = dom->createTextNode(QString::number(semitone));
+
+    XML_txt = dom->createTextNode(QString::number(lA.semiTones));
     XML_semiTones.appendChild(XML_txt);
+
+    XML_txt = dom->createTextNode(QString::number(lA.nbLoop));
+    XML_nbLoop.appendChild(XML_txt);
 
 }
 bool configAudioFile::createDefaultConfigFile( QString configFileName )

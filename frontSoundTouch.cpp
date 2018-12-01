@@ -34,7 +34,6 @@ struct structTimerBuff {
 };
 
 structTimerBuff MainBuffer;
-
 ////////////////////////////////////////////////////////////////////////////
 /// \brief processFile::paCallback
 /// \param inputBuffer
@@ -66,6 +65,7 @@ int frontSoundTouch::paCallback( const void *inputBuffer, void *outputBuffer,
         localPF = (frontSoundTouch*)userData;
         countRead = localPF->getMemBuffer( out,framesPerBuffer );
         if( countRead < framesPerBuffer ){
+            emit(localPF->processed(100));
             return paComplete;
         }
     }
@@ -295,7 +295,6 @@ void frontSoundTouch::seek(long long frameToStart)
     listOfBlock.clear();
     if( !isPaused ){
         fillBufferTimer->start( 0 );
-
         err = Pa_StartStream(stream);
         if( err != paNoError )
             goto error;
